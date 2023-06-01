@@ -8,6 +8,7 @@ packages = [{include = "todo_six"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+pyqt6 = "^6.5.0"
 
 
 [tool.poetry.group.dev.dependencies]

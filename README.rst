@@ -2,7 +2,9 @@
 todo_six
 ************
 
-Describe project here
+This repository contains a todo list implimented with a Graphical User Interface (GUI).  The
+code based was programmed in the Python programming language using the PyQt6 library, hend
+the six in todo_six.
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
