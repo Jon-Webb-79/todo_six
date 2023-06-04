@@ -1,11 +1,10 @@
 # Import necessary packages here
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QDate, Qt
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QButtonGroup,
     QCalendarWidget,
     QComboBox,
-    QDate,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -119,6 +118,26 @@ class LineEdit(QLineEdit):
         self.setFont(font)
         self.setEnabled(active_widget)
 
+    # ------------------------------------------------------------------------------------------
+
+    def set_text(self, text: str) -> None:
+        """
+        Method to set the text in the QLineEdit
+
+        :param text: The text to be set
+        """
+        self.setText(text)
+
+    # ------------------------------------------------------------------------------------------
+
+    def get_text(self) -> str:
+        """
+        Method to get the text in the QLineEdit
+
+        :return: The text in the QLineEdit
+        """
+        return self.text()
+
 
 # ==========================================================================================
 # ==========================================================================================
@@ -137,6 +156,40 @@ class ListWidget(QListWidget):
         super().__init__()
         self.setFont(font)
         self.setEnabled(active_widget)
+
+    # ------------------------------------------------------------------------------------------
+
+    def add_item(self, item: str) -> None:
+        """
+        Method to add an item to the QListWidget
+
+        :param item: The item to be added
+        """
+        self.addItem(item)
+
+    # ------------------------------------------------------------------------------------------
+
+    def remove_item(self, item: str) -> None:
+        """
+        Method to remove an item from the QListWidget
+
+        :param item: The item to be removed
+        """
+        items = self.findItems(item, Qt.MatchExactly)
+        if not items:
+            return  # No item found to be removed
+        for item in items:
+            self.takeItem(self.row(item))
+
+    # ------------------------------------------------------------------------------------------
+
+    def get_selected_item(self) -> str:
+        """
+        Method to get the currently selected item in the QListWidget
+
+        :return: The currently selected item
+        """
+        return self.currentItem().text() if self.currentItem() else None
 
 
 # ==========================================================================================
@@ -186,6 +239,26 @@ class OpacitySlider(QWidget):
         """
         # Update the label text with the new slider value
         self.label.setText(f"Opacity: {value}")
+
+    # ------------------------------------------------------------------------------------------
+
+    def set_opacity(self, value: int) -> None:
+        """
+        Method to set the opacity
+
+        :param value: The opacity value to be set
+        """
+        self.slider.setValue(value)
+
+    # ------------------------------------------------------------------------------------------
+
+    def get_opacity(self) -> int:
+        """
+        Method to get the current opacity value
+
+        :return: The current opacity value
+        """
+        return self.slider.value()
 
 
 # ==========================================================================================
@@ -237,6 +310,26 @@ class Calendar(QCalendarWidget):
         self.setMaximumDate(end_date)
         self.setEnabled(active_widget)
         self.setGridVisible(grid)
+
+    # ------------------------------------------------------------------------------------------
+
+    def get_selected_date(self) -> QDate:
+        """
+        Method to get the currently selected date.
+
+        :return: The currently selected date.
+        """
+        return self.selectedDate()
+
+    # ------------------------------------------------------------------------------------------
+
+    def set_selected_date(self, date: QDate) -> None:
+        """
+        Method to set the selected date.
+
+        :param date: The date to select.
+        """
+        self.setSelectedDate(date)
 
 
 # ==========================================================================================
