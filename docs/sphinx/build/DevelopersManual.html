@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Developrs Manual &#8212; todo_six 0.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Todo List Users Manual" href="UsersManual.html" />
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="UsersManual.html" title="Todo List Users Manual"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">todo_six 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Developrs Manual</a></li>
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+
+  <section id="developrs-manual">
+<h1>Developrs Manual<a class="headerlink" href="#developrs-manual" title="Permalink to this heading">¶</a></h1>
+<p>The todo list application was written as with a Modelv, Viewer, Controller (MVC) architecture.
+The Model-View-Controller (MVC) architecture is a design pattern commonly used in software
+development to separate the concerns of an application into three distinct components: the Model,
+the View, and the Controller. The Model represents the data and logic of the application,
+encapsulating its business rules and state. The View is responsible for presenting the data to the
+user and displaying the user interface. The Controller acts as an intermediary between the Model
+and the View, handling user input, updating the Model, and triggering the appropriate changes in the
+View. This architecture promotes the separation of concerns, making the application more modular,
+maintainable, and easier to extend or modify.  The MVC classes are stored in the <strong>main.py</strong> file,
+their public attributes are shown below.</p>
+<section id="widgets">
+<h2>Widgets<a class="headerlink" href="#widgets" title="Permalink to this heading">¶</a></h2>
+<p>All widgets used in the todo list application are created or encapsulated in the <strong>widgets.py</strong>
+file.  In many cases, these are wrappers around the widgets already contained in the PyQt6
+library.  The widgets along with their public attributes are shown below.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="todo_six.widgets.LineEdit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">todo_six.widgets.</span></span><span class="sig-name descname"><span class="pre">LineEdit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">font</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QFont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/todo_six/widgets.html#LineEdit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.LineEdit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom QLineEdit with specific text and font</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>font</strong> – A QFont object with font type and font size</p></li>
+<li><p><strong>active_widget</strong> – Widget is active when created if set to True, inactive
+if set to false</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.widgets.LineEdit.get_text">
+<span class="sig-name descname"><span class="pre">get_text</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/todo_six/widgets.html#LineEdit.get_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.LineEdit.get_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to get the text in the QLineEdit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The text in the QLineEdit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.widgets.LineEdit.set_text">
+<span class="sig-name descname"><span class="pre">set_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/todo_six/widgets.html#LineEdit.set_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.LineEdit.set_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to set the text in the QLineEdit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – The text to be set</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="todo_six.widgets.ListWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">todo_six.widgets.</span></span><span class="sig-name descname"><span class="pre">ListWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">font</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QFont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/todo_six/widgets.html#ListWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.ListWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom QListWidget with specific text and font</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>font</strong> – A QFont object with font type and font size</p></li>
+<li><p><strong>active_widget</strong> – Widget is active when created if set to True, inactive
+if set to false</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.widgets.ListWidget.add_item">
+<span class="sig-name descname"><span class="pre">add_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/todo_six/widgets.html#ListWidget.add_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.ListWidget.add_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to add an item to the QListWidget</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>item</strong> – The item to be added</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.widgets.ListWidget.get_selected_item">
+<span class="sig-name descname"><span class="pre">get_selected_item</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/todo_six/widgets.html#ListWidget.get_selected_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.ListWidget.get_selected_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to get the currently selected item in the QListWidget</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The currently selected item</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.widgets.ListWidget.remove_item">
+<span class="sig-name descname"><span class="pre">remove_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/todo_six/widgets.html#ListWidget.remove_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.ListWidget.remove_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to remove an item from the QListWidget</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>item</strong> – The item to be removed</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="todo_six.widgets.PushButton">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">todo_six.widgets.</span></span><span class="sig-name descname"><span class="pre">PushButton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QFont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/todo_six/widgets.html#PushButton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.PushButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom QPushButton with specific text and font.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – The text to be displayed on a button</p></li>
+<li><p><strong>active_widget</strong> – Widget is active when created if set to True, inactive
+if set to false</p></li>
+</ul>
+</dd>
+<dt class="field-even">Param<span class="colon">:</span></dt>
+<dd class="field-even"><p>font: A QFont object with font type and font size</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="todo_six.widgets.DayNightRadioButton">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">todo_six.widgets.</span></span><span class="sig-name descname"><span class="pre">DayNightRadioButton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/todo_six/widgets.html#DayNightRadioButton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.DayNightRadioButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom QWidget that contains two QRadioButtons for selecting Day or Night themes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>active_widget</strong> – Widget is active when created if set to True, inactive
+if set to false</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="todo_six.widgets.OpacitySlider">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">todo_six.widgets.</span></span><span class="sig-name descname"><span class="pre">OpacitySlider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/todo_six/widgets.html#OpacitySlider"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.OpacitySlider" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom QWidget that contains a QLabel and a QSlider for setting the opacity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>active_widget</strong> – Widget is active when created if set to True, inactive
+if set to false</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.widgets.OpacitySlider.get_opacity">
+<span class="sig-name descname"><span class="pre">get_opacity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/todo_six/widgets.html#OpacitySlider.get_opacity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.OpacitySlider.get_opacity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to get the current opacity value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current opacity value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.widgets.OpacitySlider.set_opacity">
+<span class="sig-name descname"><span class="pre">set_opacity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/todo_six/widgets.html#OpacitySlider.set_opacity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.OpacitySlider.set_opacity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to set the opacity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The opacity value to be set</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.widgets.OpacitySlider.update_label">
+<span class="sig-name descname"><span class="pre">update_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/todo_six/widgets.html#OpacitySlider.update_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.OpacitySlider.update_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the QLabel text with the current slider value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The current value of the slider.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="todo_six.widgets.Calendar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">todo_six.widgets.</span></span><span class="sig-name descname"><span class="pre">Calendar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QDate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QDate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/todo_six/widgets.html#Calendar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.Calendar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom calendar widget with specified start and end dats as well as gird pattern</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_date</strong> – A QDate object representing the first acceptable date in
+the calendar</p></li>
+<li><p><strong>end_date</strong> – A QDate object representing the last acceptable date in the
+calendar</p></li>
+<li><p><strong>grid</strong> – True if a grid around the dates is to be displayed, False otherwise.</p></li>
+<li><p><strong>active_widget</strong> – Widget is active when created if set to True, inactive
+if set to false</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.widgets.Calendar.get_selected_date">
+<span class="sig-name descname"><span class="pre">get_selected_date</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QDate</span></span></span><a class="reference internal" href="_modules/todo_six/widgets.html#Calendar.get_selected_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.Calendar.get_selected_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to get the currently selected date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The currently selected date.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.widgets.Calendar.set_selected_date">
+<span class="sig-name descname"><span class="pre">set_selected_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QDate</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/todo_six/widgets.html#Calendar.set_selected_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.Calendar.set_selected_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to set the selected date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>date</strong> – The date to select.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="menu-bar">
+<h2>Menu Bar<a class="headerlink" href="#menu-bar" title="Permalink to this heading">¶</a></h2>
+<p>All menu bar items used in the todo list application are created from the <strong>menu_bar.py</strong>
+file.</p>
+</section>
+<section id="databasemanager">
+<h2>DatabaseManager<a class="headerlink" href="#databasemanager" title="Permalink to this heading">¶</a></h2>
+<p>All database actions are controlled from the DatabaseManager class stored in <strong>database.py</strong></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Developrs Manual</a><ul>
+<li><a class="reference internal" href="#widgets">Widgets</a><ul>
+<li><a class="reference internal" href="#todo_six.widgets.LineEdit"><code class="docutils literal notranslate"><span class="pre">LineEdit</span></code></a><ul>
+<li><a class="reference internal" href="#todo_six.widgets.LineEdit.get_text"><code class="docutils literal notranslate"><span class="pre">LineEdit.get_text()</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.widgets.LineEdit.set_text"><code class="docutils literal notranslate"><span class="pre">LineEdit.set_text()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#todo_six.widgets.ListWidget"><code class="docutils literal notranslate"><span class="pre">ListWidget</span></code></a><ul>
+<li><a class="reference internal" href="#todo_six.widgets.ListWidget.add_item"><code class="docutils literal notranslate"><span class="pre">ListWidget.add_item()</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.widgets.ListWidget.get_selected_item"><code class="docutils literal notranslate"><span class="pre">ListWidget.get_selected_item()</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.widgets.ListWidget.remove_item"><code class="docutils literal notranslate"><span class="pre">ListWidget.remove_item()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#todo_six.widgets.PushButton"><code class="docutils literal notranslate"><span class="pre">PushButton</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.widgets.DayNightRadioButton"><code class="docutils literal notranslate"><span class="pre">DayNightRadioButton</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.widgets.OpacitySlider"><code class="docutils literal notranslate"><span class="pre">OpacitySlider</span></code></a><ul>
+<li><a class="reference internal" href="#todo_six.widgets.OpacitySlider.get_opacity"><code class="docutils literal notranslate"><span class="pre">OpacitySlider.get_opacity()</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.widgets.OpacitySlider.set_opacity"><code class="docutils literal notranslate"><span class="pre">OpacitySlider.set_opacity()</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.widgets.OpacitySlider.update_label"><code class="docutils literal notranslate"><span class="pre">OpacitySlider.update_label()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#todo_six.widgets.Calendar"><code class="docutils literal notranslate"><span class="pre">Calendar</span></code></a><ul>
+<li><a class="reference internal" href="#todo_six.widgets.Calendar.get_selected_date"><code class="docutils literal notranslate"><span class="pre">Calendar.get_selected_date()</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.widgets.Calendar.set_selected_date"><code class="docutils literal notranslate"><span class="pre">Calendar.set_selected_date()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#menu-bar">Menu Bar</a></li>
+<li><a class="reference internal" href="#databasemanager">DatabaseManager</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="UsersManual.html"
+                          title="previous chapter">Todo List Users Manual</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/DevelopersManual.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="UsersManual.html" title="Todo List Users Manual"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">todo_six 0.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Developrs Manual</a></li>
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2023, Jonathan A. Webb.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.0.1.
+    </div>
+  </body>
+</html>
