@@ -19,7 +19,7 @@ from todo_six.widgets import (
 # File:    test.py
 # Date:    June 01, 2023
 # Author:  Jonathan A. Webb
-# Purpose: Describe the types of testing to occur in this file.
+# Purpose: This file tests the methods and classes in the widgets.py file
 # Instruction: This code can be run in hte following ways
 #              - pytest # runs all functions beginnning with the word test in the
 #                         directory

@@ -108,7 +108,8 @@ markers = [
 	"listwidget: marks for tests of the ListWidget class",
 	"opacityslider: marks for tests of the OpacitySlider class",
 	"pushbutton: marks for tests of the PushButton class",
-	"calendar: marks for tests of the Calendar class"
+	"calendar: marks for tests of the Calendar class",
+	"sqlitemanager: marks for tests of the SQliteManager class"
 ]
 
 [project.urls]
