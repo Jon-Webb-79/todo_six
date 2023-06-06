@@ -45,4 +45,8 @@ file.
 
 DatabaseManager
 ===============
-All database actions are controlled from the DatabaseManager class stored in **database.py**
+All database actions are controlled from the DatabaseManager class stored in **database.py**.
+The database classes are as follows.
+
+.. autoclass:: todo_six.database.SQLiteManager
+   :members:

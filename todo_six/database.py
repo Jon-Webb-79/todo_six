@@ -122,6 +122,27 @@ class SQLiteManager(QSqlDatabase):
     :param hostname: The hostname for the database, set to None for SQLite
     :param username: The username for database access, set to None for SQLite
     :param pwd: The password associated with the username, set to None for SQLite
+
+    The SQLiteManager code examples assumes the existence of a SQLite database named
+    'data.db' which contains a table named 'inventory' with the following structure:
+
+    +----+---------+--------+
+    | ID | Product | Number |
+    +----+---------+--------+
+    |  1 | A       |   10.0 |
+    +    +         +        +
+    |  2 | B       |   15.5 |
+    +    +         +        +
+    |  3 | C       |   20.0 |
+    +    +         +        +
+    |  4 | D       |   25.5 |
+    +    +         +        +
+    |  5 | E       |   30.0 |
+    +----+---------+--------+
+
+    'ID' is an integer primary key, 'Product' is a text entry, and 'Number' is a real
+    number.
+
     """
 
     def __init__(
@@ -144,6 +165,24 @@ class SQLiteManager(QSqlDatabase):
         :return result: A tuple containing a boolean and a string.  A boolean of
                         True indicates the operation was successful, and the string
                         contains a description of the result
+
+
+        Example:
+
+        .. code-block::
+
+            from todo_six.database import SQLiteManager
+
+            # example for class instantiation
+            db_manager = SQLiteManager('data.db')
+            success, message = db_manager.open_db()
+            print(success)
+            print(message)
+
+            db_manager.close_db()
+            >> True
+            >> data.db database successfully opened
+
         """
         if not self.con.open():
             # Write to stderr for debugging
@@ -160,6 +199,25 @@ class SQLiteManager(QSqlDatabase):
         :return result: A tuple containing a boolean and a string.  A boolean of
                         True indicates the operation was successful, and the string
                         contains a description of the result
+
+        Example:
+
+        .. code-block::
+
+            from todo_six.database import SQLiteManager
+
+            # example for class instantiation
+            db_manager = SQLiteManager('data.db')
+            success, message = db_manager.open_db()
+            print(success)
+            print(message)
+
+            success, message = db_manager.close_db()
+            >> True
+            >> data.db database successfully opened
+
+            >> True
+            >> data.db database successfully closed
         """
         if not self.con.isOpen():
             # Write to stderr for debugging
@@ -179,6 +237,42 @@ class SQLiteManager(QSqlDatabase):
                         The boolean indicates the operation was successful,
                         the QSqlQuery object contains the query results (if any),
                         and the string contains a description of the result.
+
+        .. code-block::
+
+            from todo_six.database import SQLiteManager
+
+            # Example for class instantiation
+            db_manager = SQLiteManager('data.db')
+            success, message = db_manager.open_db()
+            print(success)
+            print(message)
+
+            # Example 1: Execute UPDATE statement (does not return QSqlQuery object)
+            query = "UPDATE inventory SET Number = 50 WHERE Product = 'A';"
+            success, result, message = db_manager.db_query(query)
+            if success:
+                print(message)
+            else:
+                print("Update failed:", message)
+
+            # Example 2: Execute SELECT statement (returns QSqlQuery object)
+            query = "SELECT * FROM inventory;"
+            success, result, message = db_manager.db_query(query)
+            ids = []
+            products = []
+            numbers = []
+            if success:
+                print("Query successful!")
+                while result.next():
+                    ids.append(result.value(0))
+                    products.append(result.value(1))
+                    numbers.append(result.value(2))
+            print(f"ID: {id}, Product: {product}, Number: {number}")
+            else:
+                print("Query failed:", message)
+
+            db_manager.close_db()
         """
         if not self.con.isOpen():
             # Write to stderr for debugging
@@ -207,6 +301,26 @@ class SQLiteManager(QSqlDatabase):
                         True indicates the operation was successful, and the dictionary
                         contains the names of each column and the type associated with
                         each column
+        Example:
+
+        .. code-block::
+
+            from todo_six.database import SQLiteManager
+
+            # example for class instantiation
+            db_manager = SQLiteManager('data.db')
+            success, message = db_manager.open_db()
+
+            success, schema, message = db_manager.table_schema('inventory')
+            if success:
+                print(schema)
+            else:
+                print(message)
+
+            db_manager.close_db()
+
+            >> {'ID': 'INTEGER', 'Product': 'TEXT', 'Number': 'REAL'}
+
         """
         if not self.con.isOpen():
             sys.stderr.write(f"{self.db_name} database is not open\n")
@@ -235,6 +349,27 @@ class SQLiteManager(QSqlDatabase):
                         dictionary contains the names of each table as keys, each
                         containing a dictionary of column names and the type associated
                         with each column. The string is a description of the result.
+
+        Example:
+
+        .. code-block::
+
+            from todo_six.database import SQLiteManager
+
+            # example for class instantiation
+            db_manager = SQLiteManager('data.db')
+            success, message = db_manager.open_db()
+
+            success, schema, message = db_manager.db_schema()
+            if success:
+                print(schema)
+            else:
+                print(message)
+
+            db_manager.close_db()
+
+            >> {'inventory': {'ID': 'INTEGER', 'Product': 'TEXT', 'Number': 'REAL'}}
+
         """
         if not self.con.isOpen():
             sys.stderr.write(f"{self.db_name} database is not open\n")
@@ -263,14 +398,37 @@ class SQLiteManager(QSqlDatabase):
         self, table_name: str, column_names: list[str], data_types: list[str]
     ) -> tuple[bool, str]:
         """
-        Method to create a table in the database.
+         Method to create a table in the database.
 
-        :param table_name: The name of the table
-        :param column_names: A list of the names of columns
-        :param data_types: A list of data types for each column
-        :return: A tuple containing a boolean and a string. A boolean of
-                 True indicates the operation was successful, and the string
-                 contains a description of the result
+         :param table_name: The name of the table
+         :param column_names: A list of the names of columns
+         :param data_types: A list of data types for each column
+         :return: A tuple containing a boolean and a string. A boolean of
+                  True indicates the operation was successful, and the string
+                  contains a description of the result
+
+        Example:
+
+         .. code-block::
+
+             from todo_six.database import SQLiteManager
+
+             # example for class instantiation
+             db_manager = SQLiteManager('data.db')
+             success, message = db_manager.open_db()
+
+             success, message = db_manager.create_table('new_table',
+                               ['ID', 'Name', 'Age'],
+                               ['INTEGER', 'TEXT', 'INTEGER'])
+             if success:
+                 print(f"Successfully created table: {message}")
+             else:
+                 print(f"Failed to create table: {message}")
+
+             db_manager.close_db()
+
+             >> Successfully created table: Table new_table successfully created
+
         """
         if not self.con.isOpen():
             sys.stderr.write(f"{self.db_name} database is not open\n")
