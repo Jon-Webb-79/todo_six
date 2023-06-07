@@ -1,8 +1,10 @@
 # Import necessary packages here
 import sys
+import uuid
 from datetime import datetime, timedelta
 from typing import Protocol
 
+import pandas as pd
 from PyQt6.QtSql import QSqlDatabase, QSqlQuery
 
 # ==========================================================================================
@@ -120,6 +122,8 @@ class SQLiteManager(QSqlDatabase):
     Class to manage generic SQLite functions
 
     :param db_name: The name and pathlength to the SQLite database
+    :param connection_name: A unique name for the database connection to distinguish
+                            it from other connections
     :param hostname: The hostname for the database, set to None for SQLite
     :param username: The username for database access, set to None for SQLite
     :param pwd: The password associated with the username, set to None for SQLite
@@ -147,13 +151,20 @@ class SQLiteManager(QSqlDatabase):
     """
 
     def __init__(
-        self, db_name: str, hostname: str = None, username: str = None, pwd: str = None
+        self,
+        db_name: str,
+        connection_name: str = None,
+        hostname: str = None,
+        username: str = None,
+        pwd: str = None,
     ):
         msg = "Hostname, Username, and Password are no required in SQLite\n"
         if hostname is not None or username is not None or pwd is not None:
             sys.stderr.write(msg)
+        if connection_name is None:
+            connection_name = str(uuid.uuid4())  # use a UUID as a unique connection name
         self.db_name = db_name
-        self.con = self.addDatabase("QSQLITE")
+        self.con = self.addDatabase("QSQLITE", connection_name)
         self.con.setDatabaseName(db_name)
         super().__init__()
 
@@ -486,6 +497,18 @@ class SQLiteManager(QSqlDatabase):
         else:
             return False, f"Table {table_name} does not exist in {self.db_name} database"
 
+    # ------------------------------------------------------------------------------------------
+
+    def remove_db(self) -> None:
+        """
+        If the connection has been terminated, the database object is still persistent.
+        This method removed the database object, so it does not get mangled with
+        other objects.
+        """
+        if self.isOpen():
+            self.close_db()
+        QSqlDatabase.removeDatabase(self.connectionName())
+
 
 # ==========================================================================================
 # ==========================================================================================
@@ -518,7 +541,7 @@ class ToDoDatabase(SQLiteManager):
 
         # Create table if it does not already exist
         table_name = "tasks"
-        cols = ["task_id", "tasks", "start_date", "end_date"]
+        cols = ["task_id", "task", "start_date", "end_date"]
         types = ["INTEGER PRIMARY KEY", "TEXT NOT NULL", "DATE", "DATE"]
         success, msg = self.create_table(table_name, cols, types)
         return success, msg
@@ -535,7 +558,7 @@ class ToDoDatabase(SQLiteManager):
                   contains a description of the result
         """
         start_date = datetime.now().strftime("%Y-%m-%d")
-        query = "INSERT INTO tasks (tasks, start_date) VALUES (?, ?);"
+        query = "INSERT INTO tasks (task, start_date) VALUES (?, ?);"
         params = (task, start_date)
         success, _, message = self.db_query(query, params)
         if success:
@@ -584,7 +607,7 @@ class ToDoDatabase(SQLiteManager):
 
     # ------------------------------------------------------------------------------------------
 
-    def select_open_tasks(self) -> tuple[bool, list[str], str]:
+    def select_open_tasks(self) -> tuple[bool, pd.DataFrame, str]:
         """
         Method to select all tasks that are still open.
 
@@ -598,55 +621,57 @@ class ToDoDatabase(SQLiteManager):
         success, result, message = self.db_query(query, None)
         if success:
             while result.next():
-                tasks.append(result.value(1))  # get the task text
-            return True, tasks, message
+                tasks.append([result.value(0), result.value(1)])  # get the task text
+            df = pd.DataFrame(tasks, columns=["task_id", "task"])
+            return True, df, message
         else:
-            return False, [""], message
+            return False, pd.DataFrame(), message
 
     # ------------------------------------------------------------------------------------------
 
     def select_closed_tasks(
         self, time_frame: str, date=datetime.now().strftime("%Y-%m-%d")
-    ) -> tuple[bool, list[str], str]:
+    ) -> tuple[bool, pd.DataFrame, str]:
         time_frame = time_frame.upper()
         expected = ["DAY", "WEEK", "MONTH", "YEAR", "ALL"]
         if time_frame not in expected:
-            return False, [], "time_frame not correctly formatted"
+            return False, pd.DataFrame(), "time_frame not correctly formatted"
 
         if time_frame == "DAY":
-            query = "SELECT id, task FROM tasks WHERE end_date=?;"
+            query = "SELECT task_id, task FROM tasks WHERE end_date=?;"
             params = (date,)
         elif time_frame == "WEEK":
             date = datetime.strptime(date, "%Y-%m-%d")
             start_date = (date - timedelta(days=date.weekday())).strftime("%Y-%m-%d")
-            query = "SELECT id, task FROM tasks WHERE end_date BETWEEN "
+            query = "SELECT task_id, task FROM tasks WHERE end_date BETWEEN "
             query += "? AND ?;"
             params = (start_date, date.strftime("%Y-%m-%d"))
         elif time_frame == "MONTH":
             date = datetime.strptime(date, "%Y-%m-%d")
             start_date = date.replace(day=1).strftime("%Y-%m-%d")
-            query = "SELECT id, task FROM tasks WHERE end_date BETWEEN "
+            query = "SELECT task_id, task FROM tasks WHERE end_date BETWEEN "
             query += "? AND ?;"
             params = (start_date, date.strftime("%Y-%m-%d"))
         elif time_frame == "YEAR":
             date = datetime.strptime(date, "%Y-%m-%d")
             start_date = date.replace(day=1, month=1).strftime("%Y-%m-%d")
-            query = "SELECT id, task FROM tasks WHERE end_date BETWEEN "
+            query = "SELECT task_id, task FROM tasks WHERE end_date BETWEEN "
             query += "? AND ?;"
             params = (start_date, date.strftime("%Y-%m-%d"))
         else:
-            query = "SELECT id, task FROM tasks WHERE end_date IS NOT NULL;"
+            query = "SELECT task_id, task FROM tasks WHERE end_date IS NOT NULL;"
             params = None
 
-        success, results, message = self.db_query(query, params)
+        success, result, message = self.db_query(query, params)
         tasks = []
         msg = f"Successfully retrieved tasks for time_frame: {time_frame}."
         if success:
-            while results.next():
-                tasks.append(results.value(1))  # get the next task
-            return True, tasks, msg
+            while result.next():
+                tasks.append([result.value(0), result.value(1)])  # get the task text
+            df = pd.DataFrame(tasks, columns=["task_id", "task"])
+            return True, df, msg
         else:
-            return False, [], message
+            return False, pd.DataFrame(), message
 
 
 # ==========================================================================================

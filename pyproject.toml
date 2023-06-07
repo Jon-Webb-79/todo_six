@@ -9,6 +9,7 @@ packages = [{include = "todo_six"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 pyqt6 = "^6.5.0"
+pandas = "^2.0.2"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -109,7 +110,8 @@ markers = [
 	"opacityslider: marks for tests of the OpacitySlider class",
 	"pushbutton: marks for tests of the PushButton class",
 	"calendar: marks for tests of the Calendar class",
-	"sqlitemanager: marks for tests of the SQliteManager class"
+	"sqlitemanager: marks for tests of the SQliteManager class",
+	"tododatabase: marks for tests of the ToDoDatabase class"
 ]
 
 [project.urls]
