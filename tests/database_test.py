@@ -67,7 +67,9 @@ def test_open_close_db(db_manager):
 def test_create_table(db_manager):
     success, _ = db_manager.open_db()
     assert success
-    success, _ = db_manager.create_table("test", ["id", "name"], ["INTEGER", "TEXT"])
+    success, _ = db_manager.create_table(
+        "test", ["table_id", "name"], ["INTEGER", "TEXT"]
+    )
     assert success
     success, _ = db_manager.close_db()
     assert success
@@ -82,7 +84,7 @@ def test_table_schema(db_manager):
     assert success
     success, schema, _ = db_manager.table_schema("test")
     assert success
-    assert schema == {"id": "INTEGER", "name": "TEXT"}
+    assert schema == {"table_id": "INTEGER", "name": "TEXT"}
     success, _ = db_manager.close_db()
     assert success
 
@@ -96,7 +98,7 @@ def test_db_schema(db_manager):
     assert success
     success, schema, _ = db_manager.db_schema()
     assert success
-    assert schema == {"test": {"id": "INTEGER", "name": "TEXT"}}
+    assert schema == {"test": {"table_id": "INTEGER", "name": "TEXT"}}
     success, _ = db_manager.close_db()
     assert success
 
@@ -124,12 +126,12 @@ def test_db_query(db_manager):
     success, _ = db_manager.open_db()
     assert success
 
-    # first, create a table and insert some data
     success, _ = db_manager.create_table("new_test", ["id", "name"], ["INTEGER", "TEXT"])
     assert success
 
+    # note the '?' placeholders in the query
     success, _, _ = db_manager.db_query(
-        "INSERT INTO new_test (id, name) VALUES (1, 'Alice')"
+        "INSERT INTO new_test (id, name) VALUES (?, ?)", (1, "Alice")
     )
     assert success
 

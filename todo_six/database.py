@@ -1,5 +1,6 @@
 # Import necessary packages here
 import sys
+from datetime import datetime, timedelta
 from typing import Protocol
 
 from PyQt6.QtSql import QSqlDatabase, QSqlQuery
@@ -17,7 +18,7 @@ from PyQt6.QtSql import QSqlDatabase, QSqlQuery
 # Insert Code here
 
 
-class SQLManager(Protocol):
+class RelationalDBManager(Protocol):
     def open_db(self) -> tuple[bool, str]:
         """
         Template method for opening an existing database
@@ -228,11 +229,12 @@ class SQLiteManager(QSqlDatabase):
 
     # ------------------------------------------------------------------------------------------
 
-    def db_query(self, query: str) -> tuple[bool, QSqlQuery, str]:
+    def db_query(self, query: str, params: tuple = None) -> tuple[bool, QSqlQuery, str]:
         """
         Method to query a database
 
         :param query: A string query of a database
+        :param params: A tuple containing parameters to be included in the query
         :return result: A tuple containing a boolean, a QSqlQuery object, and a string.
                         The boolean indicates the operation was successful,
                         the QSqlQuery object contains the query results (if any),
@@ -248,17 +250,20 @@ class SQLiteManager(QSqlDatabase):
             print(success)
             print(message)
 
-            # Example 1: Execute UPDATE statement (does not return QSqlQuery object)
-            query = "UPDATE inventory SET Number = 50 WHERE Product = 'A';"
-            success, result, message = db_manager.db_query(query)
+            # - Example 1: Execute UPDATE statement with parameters
+            #  (does not return QSqlQuery object)
+            query = "UPDATE inventory SET Number = ? WHERE Product = ?;"
+            params = (50, 'A')
+            success, result, message = db_manager.db_query(query, params)
             if success:
                 print(message)
             else:
                 print("Update failed:", message)
 
             # Example 2: Execute SELECT statement (returns QSqlQuery object)
-            query = "SELECT * FROM inventory;"
-            success, result, message = db_manager.db_query(query)
+            query = "SELECT * FROM inventory WHERE Product = ?;"
+            params = ('A', )
+            success, result, message = db_manager.db_query(query, params)
             ids = []
             products = []
             numbers = []
@@ -280,11 +285,17 @@ class SQLiteManager(QSqlDatabase):
             return False, QSqlQuery(), f"{self.db_name} database is not open"
 
         q = QSqlQuery(self.con)
-        success = q.exec(query)
+
+        q.prepare(query)
+
+        if params is not None:
+            for param in params:
+                q.addBindValue(param)
+
+        success = q.exec()
 
         if not success:
             error_message = q.lastError().text()
-            # Write to stderr for debugging
             sys.stderr.write(f"Error executing query: {error_message}\n")
             return False, QSqlQuery(), f"Error executing query: {error_message}"
 
@@ -474,6 +485,168 @@ class SQLiteManager(QSqlDatabase):
             return True, f"Table {table_name} exists in {self.db_name} database"
         else:
             return False, f"Table {table_name} does not exist in {self.db_name} database"
+
+
+# ==========================================================================================
+# ==========================================================================================
+
+
+class ToDoDatabase(SQLiteManager):
+    """
+    Class to handle database manager for Todo application
+
+    :param db_name: The database name
+    """
+
+    def __init__(self, db_name: str):
+        super().__init__(db_name)
+
+    # ------------------------------------------------------------------------------------------
+
+    def create_tasks_table(self) -> tuple[bool, str]:
+        """
+        Method to create a task table if it does not already exist
+
+        :return: A tuple containing a boolean and a string. A boolean of
+                  True indicates the operation was successful, and the string
+                  contains a description of the result
+        """
+        # Check to see if table already exists
+        success, msg = self.table_exists("tasks")
+        if success:
+            return success, msg
+
+        # Create table if it does not already exist
+        table_name = "tasks"
+        cols = ["task_id", "tasks", "start_date", "end_date"]
+        types = ["INTEGER PRIMARY KEY", "TEXT NOT NULL", "DATE", "DATE"]
+        success, msg = self.create_table(table_name, cols, types)
+        return success, msg
+
+    # ------------------------------------------------------------------------------------------
+
+    def insert_task(self, task) -> tuple[bool, str]:
+        """
+        Method to insert a task to the tasks table of a database
+
+        :param task: A todo list task represented as a character string
+        :return: A tuple containing a boolean and a string. A boolean of
+                  True indicates the operation was successful, and the string
+                  contains a description of the result
+        """
+        start_date = datetime.now().strftime("%Y-%m-%d")
+        query = "INSERT INTO tasks (tasks, start_date) VALUES (?, ?);"
+        params = (task, start_date)
+        success, _, message = self.db_query(query, params)
+        if success:
+            return True, f"Task '{task}' successfully added to tasks."
+        else:
+            return False, message
+
+    # ------------------------------------------------------------------------------------------
+
+    def complete_task(self, task_id: int) -> tuple[bool, str]:
+        """
+        Method to complete task by entering its end date
+
+        :param task_id: The interger id associated with a task
+        :return: A tuple containing a boolean and a string. A boolean of
+                  True indicates the operation was successful, and the string
+                  contains a description of the result
+        """
+        end_date = datetime.now().strftime("%Y-%m-%d")
+        query = "UPDATE tasks SET end_date=? WHERE task_id=?;"
+        params = (end_date, task_id)
+        success, _, message = self.db_query(query, params)
+        if success:
+            return True, f"Task id {task_id} successfully completed."
+        else:
+            return False, message
+
+    # ------------------------------------------------------------------------------------------
+
+    def delete_task(self, task_id: int) -> tuple[bool, str]:
+        """
+        Method to delete a task from the tasks table of a database.
+
+        :param task_id: The integer id associated with a task
+        :return: A tuple containing a boolean and a string. A boolean of
+                  True indicates the operation was successful, and the string
+                  contains a description of the result
+        """
+        query = "DELETE FROM tasks WHERE task_id=?;"
+        params = (task_id,)
+        success, _, message = self.db_query(query, params)
+        if success:
+            return True, f"Task id {task_id} successfully deleted."
+        else:
+            return False, message
+
+    # ------------------------------------------------------------------------------------------
+
+    def select_open_tasks(self) -> tuple[bool, list[str], str]:
+        """
+        Method to select all tasks that are still open.
+
+        :param task_id: The integer id associated with a task
+        :return: A tuple containing a boolean and a string. A boolean of
+                  True indicates the operation was successful, and the string
+                  contains a description of the result
+        """
+        tasks = []
+        query = "SELECT task_id, task FROM tasks WHERE end_date IS NULL"
+        success, result, message = self.db_query(query, None)
+        if success:
+            while result.next():
+                tasks.append(result.value(1))  # get the task text
+            return True, tasks, message
+        else:
+            return False, [""], message
+
+    # ------------------------------------------------------------------------------------------
+
+    def select_closed_tasks(
+        self, time_frame: str, date=datetime.now().strftime("%Y-%m-%d")
+    ) -> tuple[bool, list[str], str]:
+        time_frame = time_frame.upper()
+        expected = ["DAY", "WEEK", "MONTH", "YEAR", "ALL"]
+        if time_frame not in expected:
+            return False, [], "time_frame not correctly formatted"
+
+        if time_frame == "DAY":
+            query = "SELECT id, task FROM tasks WHERE end_date=?;"
+            params = (date,)
+        elif time_frame == "WEEK":
+            date = datetime.strptime(date, "%Y-%m-%d")
+            start_date = (date - timedelta(days=date.weekday())).strftime("%Y-%m-%d")
+            query = "SELECT id, task FROM tasks WHERE end_date BETWEEN "
+            query += "? AND ?;"
+            params = (start_date, date.strftime("%Y-%m-%d"))
+        elif time_frame == "MONTH":
+            date = datetime.strptime(date, "%Y-%m-%d")
+            start_date = date.replace(day=1).strftime("%Y-%m-%d")
+            query = "SELECT id, task FROM tasks WHERE end_date BETWEEN "
+            query += "? AND ?;"
+            params = (start_date, date.strftime("%Y-%m-%d"))
+        elif time_frame == "YEAR":
+            date = datetime.strptime(date, "%Y-%m-%d")
+            start_date = date.replace(day=1, month=1).strftime("%Y-%m-%d")
+            query = "SELECT id, task FROM tasks WHERE end_date BETWEEN "
+            query += "? AND ?;"
+            params = (start_date, date.strftime("%Y-%m-%d"))
+        else:
+            query = "SELECT id, task FROM tasks WHERE end_date IS NOT NULL;"
+            params = None
+
+        success, results, message = self.db_query(query, params)
+        tasks = []
+        msg = f"Successfully retrieved tasks for time_frame: {time_frame}."
+        if success:
+            while results.next():
+                tasks.append(results.value(1))  # get the next task
+            return True, tasks, msg
+        else:
+            return False, [], message
 
 
 # ==========================================================================================
