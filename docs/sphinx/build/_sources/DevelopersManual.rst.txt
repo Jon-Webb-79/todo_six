@@ -50,3 +50,6 @@ The database classes are as follows.
 
 .. autoclass:: todo_six.database.SQLiteManager
    :members:
+
+.. autoclass:: todo_six.database.ToDoDatabase
+   :members:

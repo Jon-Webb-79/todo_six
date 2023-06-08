@@ -612,9 +612,10 @@ class ToDoDatabase(SQLiteManager):
         Method to select all tasks that are still open.
 
         :param task_id: The integer id associated with a task
-        :return: A tuple containing a boolean and a string. A boolean of
-                  True indicates the operation was successful, and the string
-                  contains a description of the result
+        :return: A tuple containing a boolean, a pandas dataframe and a string.
+                 A boolean of True indicates the operation was successful, the pandas
+                 dataframe contains the results of the query, and the string
+                 contains a description of the result
         """
         tasks = []
         query = "SELECT task_id, task FROM tasks WHERE end_date IS NULL"
@@ -632,6 +633,17 @@ class ToDoDatabase(SQLiteManager):
     def select_closed_tasks(
         self, time_frame: str, date=datetime.now().strftime("%Y-%m-%d")
     ) -> tuple[bool, pd.DataFrame, str]:
+        """
+        Method to select all tasks that have been closed within a certain time frame
+        of a given date
+
+        :param time_frame: 'DAY', 'WEEEK', 'MONTH', 'YEAR', 'ALL'
+        :param date: A datetime object in the format strftime("%Y-%m-%d")
+        :return: A tuple containing a boolean, a pandas dataframe and a string.
+                 A boolean of True indicates the operation was successful, the pandas
+                 dataframe contains the results of the query, and the string
+                 contains a description of the result
+        """
         time_frame = time_frame.upper()
         expected = ["DAY", "WEEK", "MONTH", "YEAR", "ALL"]
         if time_frame not in expected:

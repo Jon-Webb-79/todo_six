@@ -266,12 +266,14 @@ file.</p>
 The database classes are as follows.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="todo_six.database.SQLiteManager">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">todo_six.database.</span></span><span class="sig-name descname"><span class="pre">SQLiteManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pwd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/todo_six/database.html#SQLiteManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.SQLiteManager" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">todo_six.database.</span></span><span class="sig-name descname"><span class="pre">SQLiteManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pwd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/todo_six/database.html#SQLiteManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.SQLiteManager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to manage generic SQLite functions</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>db_name</strong> – The name and pathlength to the SQLite database</p></li>
+<li><p><strong>connection_name</strong> – A unique name for the database connection to distinguish
+it from other connections</p></li>
 <li><p><strong>hostname</strong> – The hostname for the database, set to None for SQLite</p></li>
 <li><p><strong>username</strong> – The username for database access, set to None for SQLite</p></li>
 <li><p><strong>pwd</strong> – The password associated with the username, set to None for SQLite</p></li>
@@ -311,7 +313,8 @@ The database classes are as follows.</p>
 <tr class="row-even"></tr>
 </tbody>
 </table>
-<p>‘ID’ is an integer primary key, ‘Product’ is a text entry, and ‘Number’ is a real number.</p>
+<p>‘ID’ is an integer primary key, ‘Product’ is a text entry, and ‘Number’ is a real
+number.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="todo_six.database.SQLiteManager.close_db">
 <span class="sig-name descname"><span class="pre">close_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/todo_six/database.html#SQLiteManager.close_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.SQLiteManager.close_db" title="Permalink to this definition">¶</a></dt>
@@ -372,7 +375,9 @@ contains a description of the result</p>
 <span class="n">db_manager</span> <span class="o">=</span> <span class="n">SQLiteManager</span><span class="p">(</span><span class="s1">&#39;data.db&#39;</span><span class="p">)</span>
 <span class="n">success</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">db_manager</span><span class="o">.</span><span class="n">open_db</span><span class="p">()</span>
 
-<span class="n">success</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">db_manager</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s1">&#39;new_table&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Age&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;INTEGER&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER&#39;</span><span class="p">])</span>
+<span class="n">success</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">db_manager</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s1">&#39;new_table&#39;</span><span class="p">,</span>
+                  <span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Age&#39;</span><span class="p">],</span>
+                  <span class="p">[</span><span class="s1">&#39;INTEGER&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">,</span> <span class="s1">&#39;INTEGER&#39;</span><span class="p">])</span>
 <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully created table: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
@@ -388,11 +393,14 @@ contains a description of the result</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="todo_six.database.SQLiteManager.db_query">
-<span class="sig-name descname"><span class="pre">db_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PyQt6.QtSql.QSqlQuery</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/todo_six/database.html#SQLiteManager.db_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.SQLiteManager.db_query" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">db_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PyQt6.QtSql.QSqlQuery</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/todo_six/database.html#SQLiteManager.db_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.SQLiteManager.db_query" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to query a database</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>query</strong> – A string query of a database</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – A string query of a database</p></li>
+<li><p><strong>params</strong> – A tuple containing parameters to be included in the query</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return result<span class="colon">:</span></dt>
 <dd class="field-even"><p>A tuple containing a boolean, a QSqlQuery object, and a string.
@@ -409,17 +417,20 @@ and the string contains a description of the result.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">success</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
-<span class="c1"># Example 1: Execute UPDATE statement (does not return QSqlQuery object)</span>
-<span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;UPDATE inventory SET Number = 50 WHERE Product = &#39;A&#39;;&quot;</span>
-<span class="n">success</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">db_manager</span><span class="o">.</span><span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="c1"># - Example 1: Execute UPDATE statement with parameters</span>
+<span class="c1">#  (does not return QSqlQuery object)</span>
+<span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;UPDATE inventory SET Number = ? WHERE Product = ?;&quot;</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+<span class="n">success</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">db_manager</span><span class="o">.</span><span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Update failed:&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 
 <span class="c1"># Example 2: Execute SELECT statement (returns QSqlQuery object)</span>
-<span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM inventory;&quot;</span>
-<span class="n">success</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">db_manager</span><span class="o">.</span><span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM inventory WHERE Product = ?;&quot;</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="p">)</span>
+<span class="n">success</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">db_manager</span><span class="o">.</span><span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 <span class="n">ids</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">products</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">numbers</span> <span class="o">=</span> <span class="p">[]</span>
@@ -499,6 +510,14 @@ contains a description of the result</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="todo_six.database.SQLiteManager.remove_db">
+<span class="sig-name descname"><span class="pre">remove_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/todo_six/database.html#SQLiteManager.remove_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.SQLiteManager.remove_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the connection has been terminated, the database object is still persistent.
+This method removed the database object, so it does not get mangled with
+other objects.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="todo_six.database.SQLiteManager.table_exists">
 <span class="sig-name descname"><span class="pre">table_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/todo_six/database.html#SQLiteManager.table_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.SQLiteManager.table_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to check if a table exists in the database</p>
@@ -545,6 +564,116 @@ each column</p>
 <span class="o">&gt;&gt;</span> <span class="p">{</span><span class="s1">&#39;ID&#39;</span><span class="p">:</span> <span class="s1">&#39;INTEGER&#39;</span><span class="p">,</span> <span class="s1">&#39;Product&#39;</span><span class="p">:</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">,</span> <span class="s1">&#39;Number&#39;</span><span class="p">:</span> <span class="s1">&#39;REAL&#39;</span><span class="p">}</span>
 </pre></div>
 </div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="todo_six.database.ToDoDatabase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">todo_six.database.</span></span><span class="sig-name descname"><span class="pre">ToDoDatabase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/todo_six/database.html#ToDoDatabase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.ToDoDatabase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to handle database manager for Todo application</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>db_name</strong> – The database name</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.database.ToDoDatabase.complete_task">
+<span class="sig-name descname"><span class="pre">complete_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/todo_six/database.html#ToDoDatabase.complete_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.ToDoDatabase.complete_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to complete task by entering its end date</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>task_id</strong> – The interger id associated with a task</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing a boolean and a string. A boolean of
+True indicates the operation was successful, and the string
+contains a description of the result</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.database.ToDoDatabase.create_tasks_table">
+<span class="sig-name descname"><span class="pre">create_tasks_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/todo_six/database.html#ToDoDatabase.create_tasks_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.ToDoDatabase.create_tasks_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to create a task table if it does not already exist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing a boolean and a string. A boolean of
+True indicates the operation was successful, and the string
+contains a description of the result</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.database.ToDoDatabase.delete_task">
+<span class="sig-name descname"><span class="pre">delete_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/todo_six/database.html#ToDoDatabase.delete_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.ToDoDatabase.delete_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to delete a task from the tasks table of a database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>task_id</strong> – The integer id associated with a task</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing a boolean and a string. A boolean of
+True indicates the operation was successful, and the string
+contains a description of the result</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.database.ToDoDatabase.insert_task">
+<span class="sig-name descname"><span class="pre">insert_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/todo_six/database.html#ToDoDatabase.insert_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.ToDoDatabase.insert_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to insert a task to the tasks table of a database</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>task</strong> – A todo list task represented as a character string</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing a boolean and a string. A boolean of
+True indicates the operation was successful, and the string
+contains a description of the result</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.database.ToDoDatabase.select_closed_tasks">
+<span class="sig-name descname"><span class="pre">select_closed_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2023-06-07'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/todo_six/database.html#ToDoDatabase.select_closed_tasks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.ToDoDatabase.select_closed_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to select all tasks that have been closed within a certain time frame
+of a given date</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_frame</strong> – ‘DAY’, ‘WEEEK’, ‘MONTH’, ‘YEAR’, ‘ALL’</p></li>
+<li><p><strong>date</strong> – A datetime object in the format strftime(“%Y-%m-%d”)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing a boolean, a pandas dataframe and a string.
+A boolean of True indicates the operation was successful, the pandas
+dataframe contains the results of the query, and the string
+contains a description of the result</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="todo_six.database.ToDoDatabase.select_open_tasks">
+<span class="sig-name descname"><span class="pre">select_open_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/todo_six/database.html#ToDoDatabase.select_open_tasks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.ToDoDatabase.select_open_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to select all tasks that are still open.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>task_id</strong> – The integer id associated with a task</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing a boolean, a pandas dataframe and a string.
+A boolean of True indicates the operation was successful, the pandas
+dataframe contains the results of the query, and the string
+contains a description of the result</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -598,8 +727,18 @@ each column</p>
 <li><a class="reference internal" href="#todo_six.database.SQLiteManager.db_query"><code class="docutils literal notranslate"><span class="pre">SQLiteManager.db_query()</span></code></a></li>
 <li><a class="reference internal" href="#todo_six.database.SQLiteManager.db_schema"><code class="docutils literal notranslate"><span class="pre">SQLiteManager.db_schema()</span></code></a></li>
 <li><a class="reference internal" href="#todo_six.database.SQLiteManager.open_db"><code class="docutils literal notranslate"><span class="pre">SQLiteManager.open_db()</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.database.SQLiteManager.remove_db"><code class="docutils literal notranslate"><span class="pre">SQLiteManager.remove_db()</span></code></a></li>
 <li><a class="reference internal" href="#todo_six.database.SQLiteManager.table_exists"><code class="docutils literal notranslate"><span class="pre">SQLiteManager.table_exists()</span></code></a></li>
 <li><a class="reference internal" href="#todo_six.database.SQLiteManager.table_schema"><code class="docutils literal notranslate"><span class="pre">SQLiteManager.table_schema()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#todo_six.database.ToDoDatabase"><code class="docutils literal notranslate"><span class="pre">ToDoDatabase</span></code></a><ul>
+<li><a class="reference internal" href="#todo_six.database.ToDoDatabase.complete_task"><code class="docutils literal notranslate"><span class="pre">ToDoDatabase.complete_task()</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.database.ToDoDatabase.create_tasks_table"><code class="docutils literal notranslate"><span class="pre">ToDoDatabase.create_tasks_table()</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.database.ToDoDatabase.delete_task"><code class="docutils literal notranslate"><span class="pre">ToDoDatabase.delete_task()</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.database.ToDoDatabase.insert_task"><code class="docutils literal notranslate"><span class="pre">ToDoDatabase.insert_task()</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.database.ToDoDatabase.select_closed_tasks"><code class="docutils literal notranslate"><span class="pre">ToDoDatabase.select_closed_tasks()</span></code></a></li>
+<li><a class="reference internal" href="#todo_six.database.ToDoDatabase.select_open_tasks"><code class="docutils literal notranslate"><span class="pre">ToDoDatabase.select_open_tasks()</span></code></a></li>
 </ul>
 </li>
 </ul>

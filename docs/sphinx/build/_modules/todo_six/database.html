@@ -35,8 +35,11 @@
   <h1>Source code for todo_six.database</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Import necessary packages here</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Protocol</span>
 
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">PyQt6.QtSql</span> <span class="kn">import</span> <span class="n">QSqlDatabase</span><span class="p">,</span> <span class="n">QSqlQuery</span>
 
 <span class="c1"># ==========================================================================================</span>
@@ -52,7 +55,7 @@
 <span class="c1"># Insert Code here</span>
 
 
-<span class="k">class</span> <span class="nc">SQLManager</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">RelationalDBManager</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">open_db</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Template method for opening an existing database</span>
@@ -154,6 +157,8 @@
 <span class="sd">    Class to manage generic SQLite functions</span>
 
 <span class="sd">    :param db_name: The name and pathlength to the SQLite database</span>
+<span class="sd">    :param connection_name: A unique name for the database connection to distinguish</span>
+<span class="sd">                            it from other connections</span>
 <span class="sd">    :param hostname: The hostname for the database, set to None for SQLite</span>
 <span class="sd">    :param username: The username for database access, set to None for SQLite</span>
 <span class="sd">    :param pwd: The password associated with the username, set to None for SQLite</span>
@@ -175,17 +180,26 @@
 <span class="sd">    |  5 | E       |   30.0 |</span>
 <span class="sd">    +----+---------+--------+</span>
 
-<span class="sd">    &#39;ID&#39; is an integer primary key, &#39;Product&#39; is a text entry, and &#39;Number&#39; is a real number.</span>
+<span class="sd">    &#39;ID&#39; is an integer primary key, &#39;Product&#39; is a text entry, and &#39;Number&#39; is a real</span>
+<span class="sd">    number.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">db_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">hostname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pwd</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">db_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">connection_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">hostname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pwd</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Hostname, Username, and Password are no required in SQLite</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="n">hostname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pwd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">connection_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">connection_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>  <span class="c1"># use a UUID as a unique connection name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">db_name</span> <span class="o">=</span> <span class="n">db_name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addDatabase</span><span class="p">(</span><span class="s2">&quot;QSQLITE&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addDatabase</span><span class="p">(</span><span class="s2">&quot;QSQLITE&quot;</span><span class="p">,</span> <span class="n">connection_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">setDatabaseName</span><span class="p">(</span><span class="n">db_name</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -261,11 +275,12 @@
 
     <span class="c1"># ------------------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="SQLiteManager.db_query"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.SQLiteManager.db_query">[docs]</a>    <span class="k">def</span> <span class="nf">db_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">QSqlQuery</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="SQLiteManager.db_query"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.SQLiteManager.db_query">[docs]</a>    <span class="k">def</span> <span class="nf">db_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">QSqlQuery</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to query a database</span>
 
 <span class="sd">        :param query: A string query of a database</span>
+<span class="sd">        :param params: A tuple containing parameters to be included in the query</span>
 <span class="sd">        :return result: A tuple containing a boolean, a QSqlQuery object, and a string.</span>
 <span class="sd">                        The boolean indicates the operation was successful,</span>
 <span class="sd">                        the QSqlQuery object contains the query results (if any),</span>
@@ -281,17 +296,20 @@
 <span class="sd">            print(success)</span>
 <span class="sd">            print(message)</span>
 
-<span class="sd">            # Example 1: Execute UPDATE statement (does not return QSqlQuery object)</span>
-<span class="sd">            query = &quot;UPDATE inventory SET Number = 50 WHERE Product = &#39;A&#39;;&quot;</span>
-<span class="sd">            success, result, message = db_manager.db_query(query)</span>
+<span class="sd">            # - Example 1: Execute UPDATE statement with parameters</span>
+<span class="sd">            #  (does not return QSqlQuery object)</span>
+<span class="sd">            query = &quot;UPDATE inventory SET Number = ? WHERE Product = ?;&quot;</span>
+<span class="sd">            params = (50, &#39;A&#39;)</span>
+<span class="sd">            success, result, message = db_manager.db_query(query, params)</span>
 <span class="sd">            if success:</span>
 <span class="sd">                print(message)</span>
 <span class="sd">            else:</span>
 <span class="sd">                print(&quot;Update failed:&quot;, message)</span>
 
 <span class="sd">            # Example 2: Execute SELECT statement (returns QSqlQuery object)</span>
-<span class="sd">            query = &quot;SELECT * FROM inventory;&quot;</span>
-<span class="sd">            success, result, message = db_manager.db_query(query)</span>
+<span class="sd">            query = &quot;SELECT * FROM inventory WHERE Product = ?;&quot;</span>
+<span class="sd">            params = (&#39;A&#39;, )</span>
+<span class="sd">            success, result, message = db_manager.db_query(query, params)</span>
 <span class="sd">            ids = []</span>
 <span class="sd">            products = []</span>
 <span class="sd">            numbers = []</span>
@@ -313,11 +331,17 @@
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">QSqlQuery</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">db_name</span><span class="si">}</span><span class="s2"> database is not open&quot;</span>
 
         <span class="n">q</span> <span class="o">=</span> <span class="n">QSqlQuery</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="p">)</span>
-        <span class="n">success</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+        <span class="n">q</span><span class="o">.</span><span class="n">prepare</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">addBindValue</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+
+        <span class="n">success</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
             <span class="n">error_message</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">lastError</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
-            <span class="c1"># Write to stderr for debugging</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error executing query: </span><span class="si">{</span><span class="n">error_message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">QSqlQuery</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;Error executing query: </span><span class="si">{</span><span class="n">error_message</span><span class="si">}</span><span class="s2">&quot;</span>
 
@@ -431,34 +455,36 @@
         <span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">column_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">data_types</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Method to create a table in the database.</span>
+<span class="sd">         Method to create a table in the database.</span>
 
-<span class="sd">        :param table_name: The name of the table</span>
-<span class="sd">        :param column_names: A list of the names of columns</span>
-<span class="sd">        :param data_types: A list of data types for each column</span>
-<span class="sd">        :return: A tuple containing a boolean and a string. A boolean of</span>
-<span class="sd">                 True indicates the operation was successful, and the string</span>
-<span class="sd">                 contains a description of the result</span>
+<span class="sd">         :param table_name: The name of the table</span>
+<span class="sd">         :param column_names: A list of the names of columns</span>
+<span class="sd">         :param data_types: A list of data types for each column</span>
+<span class="sd">         :return: A tuple containing a boolean and a string. A boolean of</span>
+<span class="sd">                  True indicates the operation was successful, and the string</span>
+<span class="sd">                  contains a description of the result</span>
 
-<span class="sd">       Example:</span>
+<span class="sd">        Example:</span>
 
-<span class="sd">        .. code-block::</span>
+<span class="sd">         .. code-block::</span>
 
-<span class="sd">            from todo_six.database import SQLiteManager</span>
+<span class="sd">             from todo_six.database import SQLiteManager</span>
 
-<span class="sd">            # example for class instantiation</span>
-<span class="sd">            db_manager = SQLiteManager(&#39;data.db&#39;)</span>
-<span class="sd">            success, message = db_manager.open_db()</span>
+<span class="sd">             # example for class instantiation</span>
+<span class="sd">             db_manager = SQLiteManager(&#39;data.db&#39;)</span>
+<span class="sd">             success, message = db_manager.open_db()</span>
 
-<span class="sd">            success, message = db_manager.create_table(&#39;new_table&#39;, [&#39;ID&#39;, &#39;Name&#39;, &#39;Age&#39;], [&#39;INTEGER&#39;, &#39;TEXT&#39;, &#39;INTEGER&#39;])</span>
-<span class="sd">            if success:</span>
-<span class="sd">                print(f&quot;Successfully created table: {message}&quot;)</span>
-<span class="sd">            else:</span>
-<span class="sd">                print(f&quot;Failed to create table: {message}&quot;)</span>
+<span class="sd">             success, message = db_manager.create_table(&#39;new_table&#39;,</span>
+<span class="sd">                               [&#39;ID&#39;, &#39;Name&#39;, &#39;Age&#39;],</span>
+<span class="sd">                               [&#39;INTEGER&#39;, &#39;TEXT&#39;, &#39;INTEGER&#39;])</span>
+<span class="sd">             if success:</span>
+<span class="sd">                 print(f&quot;Successfully created table: {message}&quot;)</span>
+<span class="sd">             else:</span>
+<span class="sd">                 print(f&quot;Failed to create table: {message}&quot;)</span>
 
-<span class="sd">            db_manager.close_db()</span>
+<span class="sd">             db_manager.close_db()</span>
 
-<span class="sd">            &gt;&gt; Successfully created table: Table new_table successfully created</span>
+<span class="sd">             &gt;&gt; Successfully created table: Table new_table successfully created</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">isOpen</span><span class="p">():</span>
@@ -504,7 +530,195 @@
         <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">next</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Table </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2"> exists in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">db_name</span><span class="si">}</span><span class="s2"> database&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Table </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2"> does not exist in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">db_name</span><span class="si">}</span><span class="s2"> database&quot;</span></div></div>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Table </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2"> does not exist in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">db_name</span><span class="si">}</span><span class="s2"> database&quot;</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="SQLiteManager.remove_db"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.SQLiteManager.remove_db">[docs]</a>    <span class="k">def</span> <span class="nf">remove_db</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If the connection has been terminated, the database object is still persistent.</span>
+<span class="sd">        This method removed the database object, so it does not get mangled with</span>
+<span class="sd">        other objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isOpen</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close_db</span><span class="p">()</span>
+        <span class="n">QSqlDatabase</span><span class="o">.</span><span class="n">removeDatabase</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connectionName</span><span class="p">())</span></div></div>
+
+
+<span class="c1"># ==========================================================================================</span>
+<span class="c1"># ==========================================================================================</span>
+
+
+<div class="viewcode-block" id="ToDoDatabase"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.ToDoDatabase">[docs]</a><span class="k">class</span> <span class="nc">ToDoDatabase</span><span class="p">(</span><span class="n">SQLiteManager</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to handle database manager for Todo application</span>
+
+<span class="sd">    :param db_name: The database name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">db_name</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ToDoDatabase.create_tasks_table"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.ToDoDatabase.create_tasks_table">[docs]</a>    <span class="k">def</span> <span class="nf">create_tasks_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to create a task table if it does not already exist</span>
+
+<span class="sd">        :return: A tuple containing a boolean and a string. A boolean of</span>
+<span class="sd">                  True indicates the operation was successful, and the string</span>
+<span class="sd">                  contains a description of the result</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check to see if table already exists</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_exists</span><span class="p">(</span><span class="s2">&quot;tasks&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">success</span><span class="p">,</span> <span class="n">msg</span>
+
+        <span class="c1"># Create table if it does not already exist</span>
+        <span class="n">table_name</span> <span class="o">=</span> <span class="s2">&quot;tasks&quot;</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;task_id&quot;</span><span class="p">,</span> <span class="s2">&quot;task&quot;</span><span class="p">,</span> <span class="s2">&quot;start_date&quot;</span><span class="p">,</span> <span class="s2">&quot;end_date&quot;</span><span class="p">]</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;INTEGER PRIMARY KEY&quot;</span><span class="p">,</span> <span class="s2">&quot;TEXT NOT NULL&quot;</span><span class="p">,</span> <span class="s2">&quot;DATE&quot;</span><span class="p">,</span> <span class="s2">&quot;DATE&quot;</span><span class="p">]</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">types</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">success</span><span class="p">,</span> <span class="n">msg</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ToDoDatabase.insert_task"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.ToDoDatabase.insert_task">[docs]</a>    <span class="k">def</span> <span class="nf">insert_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to insert a task to the tasks table of a database</span>
+
+<span class="sd">        :param task: A todo list task represented as a character string</span>
+<span class="sd">        :return: A tuple containing a boolean and a string. A boolean of</span>
+<span class="sd">                  True indicates the operation was successful, and the string</span>
+<span class="sd">                  contains a description of the result</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;INSERT INTO tasks (task, start_date) VALUES (?, ?);&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">start_date</span><span class="p">)</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Task &#39;</span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">&#39; successfully added to tasks.&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">message</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ToDoDatabase.complete_task"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.ToDoDatabase.complete_task">[docs]</a>    <span class="k">def</span> <span class="nf">complete_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to complete task by entering its end date</span>
+
+<span class="sd">        :param task_id: The interger id associated with a task</span>
+<span class="sd">        :return: A tuple containing a boolean and a string. A boolean of</span>
+<span class="sd">                  True indicates the operation was successful, and the string</span>
+<span class="sd">                  contains a description of the result</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">end_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;UPDATE tasks SET end_date=? WHERE task_id=?;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">end_date</span><span class="p">,</span> <span class="n">task_id</span><span class="p">)</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Task id </span><span class="si">{</span><span class="n">task_id</span><span class="si">}</span><span class="s2"> successfully completed.&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">message</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ToDoDatabase.delete_task"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.ToDoDatabase.delete_task">[docs]</a>    <span class="k">def</span> <span class="nf">delete_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to delete a task from the tasks table of a database.</span>
+
+<span class="sd">        :param task_id: The integer id associated with a task</span>
+<span class="sd">        :return: A tuple containing a boolean and a string. A boolean of</span>
+<span class="sd">                  True indicates the operation was successful, and the string</span>
+<span class="sd">                  contains a description of the result</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;DELETE FROM tasks WHERE task_id=?;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">task_id</span><span class="p">,)</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Task id </span><span class="si">{</span><span class="n">task_id</span><span class="si">}</span><span class="s2"> successfully deleted.&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">message</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ToDoDatabase.select_open_tasks"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.ToDoDatabase.select_open_tasks">[docs]</a>    <span class="k">def</span> <span class="nf">select_open_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to select all tasks that are still open.</span>
+
+<span class="sd">        :param task_id: The integer id associated with a task</span>
+<span class="sd">        :return: A tuple containing a boolean, a pandas dataframe and a string.</span>
+<span class="sd">                 A boolean of True indicates the operation was successful, the pandas</span>
+<span class="sd">                 dataframe contains the results of the query, and the string</span>
+<span class="sd">                 contains a description of the result</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT task_id, task FROM tasks WHERE end_date IS NULL&quot;</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">result</span><span class="o">.</span><span class="n">next</span><span class="p">():</span>
+                <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">result</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">result</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mi">1</span><span class="p">)])</span>  <span class="c1"># get the task text</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;task_id&quot;</span><span class="p">,</span> <span class="s2">&quot;task&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">message</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span> <span class="n">message</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ToDoDatabase.select_closed_tasks"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.ToDoDatabase.select_closed_tasks">[docs]</a>    <span class="k">def</span> <span class="nf">select_closed_tasks</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">time_frame</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to select all tasks that have been closed within a certain time frame</span>
+<span class="sd">        of a given date</span>
+
+<span class="sd">        :param time_frame: &#39;DAY&#39;, &#39;WEEEK&#39;, &#39;MONTH&#39;, &#39;YEAR&#39;, &#39;ALL&#39;</span>
+<span class="sd">        :param date: A datetime object in the format strftime(&quot;%Y-%m-%d&quot;)</span>
+<span class="sd">        :return: A tuple containing a boolean, a pandas dataframe and a string.</span>
+<span class="sd">                 A boolean of True indicates the operation was successful, the pandas</span>
+<span class="sd">                 dataframe contains the results of the query, and the string</span>
+<span class="sd">                 contains a description of the result</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">time_frame</span> <span class="o">=</span> <span class="n">time_frame</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DAY&quot;</span><span class="p">,</span> <span class="s2">&quot;WEEK&quot;</span><span class="p">,</span> <span class="s2">&quot;MONTH&quot;</span><span class="p">,</span> <span class="s2">&quot;YEAR&quot;</span><span class="p">,</span> <span class="s2">&quot;ALL&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">time_frame</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">expected</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span> <span class="s2">&quot;time_frame not correctly formatted&quot;</span>
+
+        <span class="k">if</span> <span class="n">time_frame</span> <span class="o">==</span> <span class="s2">&quot;DAY&quot;</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT task_id, task FROM tasks WHERE end_date=?;&quot;</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">date</span><span class="p">,)</span>
+        <span class="k">elif</span> <span class="n">time_frame</span> <span class="o">==</span> <span class="s2">&quot;WEEK&quot;</span><span class="p">:</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">start_date</span> <span class="o">=</span> <span class="p">(</span><span class="n">date</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">weekday</span><span class="p">()))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT task_id, task FROM tasks WHERE end_date BETWEEN &quot;</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="s2">&quot;? AND ?;&quot;</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">time_frame</span> <span class="o">==</span> <span class="s2">&quot;MONTH&quot;</span><span class="p">:</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">start_date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT task_id, task FROM tasks WHERE end_date BETWEEN &quot;</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="s2">&quot;? AND ?;&quot;</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">time_frame</span> <span class="o">==</span> <span class="s2">&quot;YEAR&quot;</span><span class="p">:</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">start_date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT task_id, task FROM tasks WHERE end_date BETWEEN &quot;</span>
+            <span class="n">query</span> <span class="o">+=</span> <span class="s2">&quot;? AND ?;&quot;</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT task_id, task FROM tasks WHERE end_date IS NOT NULL;&quot;</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">success</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Successfully retrieved tasks for time_frame: </span><span class="si">{</span><span class="n">time_frame</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">result</span><span class="o">.</span><span class="n">next</span><span class="p">():</span>
+                <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">result</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">result</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mi">1</span><span class="p">)])</span>  <span class="c1"># get the task text</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;task_id&quot;</span><span class="p">,</span> <span class="s2">&quot;task&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">msg</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span> <span class="n">message</span></div></div>
 
 
 <span class="c1"># ==========================================================================================</span>
