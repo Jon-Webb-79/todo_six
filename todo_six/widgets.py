@@ -12,8 +12,11 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QRadioButton,
     QSlider,
+    QVBoxLayout,
     QWidget,
 )
+
+from todo_six.database import ToDoDatabase
 
 # ==========================================================================================
 # ==========================================================================================
@@ -330,6 +333,48 @@ class Calendar(QCalendarWidget):
         :param date: The date to select.
         """
         self.setSelectedDate(date)
+
+
+# ==========================================================================================
+# ==========================================================================================
+
+
+class Tab:
+    """
+    Class to set a tab instantiation for the todo_six application.
+
+    :param fnt: A QFont object
+    :param tab_name: A string character name for the object
+    :param db: A ToDoDatabase object
+    """
+
+    def __init__(self, fnt: QFont, tab_name: str, db: ToDoDatabase = None):
+        self.tab_name = tab_name
+        self.tab_widget = QWidget()
+        self.tab_layout = QVBoxLayout(self.tab_widget)
+        self.db = db
+
+        self.widgets = {
+            "entry_field": LineEdit(fnt),
+            "todo_list": ListWidget(fnt),
+            "todo_list_label": QLabel("Todo List"),
+            "completed_list_label": QLabel("Completed List"),
+            "completed_list": ListWidget(fnt),
+            "add_task_button": PushButton("Add Task", fnt),
+            "retire_task_button": PushButton("Retire Task", fnt),
+            "delete_task_button": PushButton("Delete Task", fnt),
+            "drop_down_menu": DropDownMenu(["Day", "Week", "Month", "Year", "All"]),
+        }
+
+        self.tab_layout.addWidget(self.widgets["entry_field"])
+        self.tab_layout.addWidget(self.widgets["todo_list_label"])
+        self.tab_layout.addWidget(self.widgets["todo_list"])
+        self.tab_layout.addWidget(self.widgets["completed_list_label"])
+        self.tab_layout.addWidget(self.widgets["completed_list"])
+        self.tab_layout.addWidget(self.widgets["add_task_button"])
+        self.tab_layout.addWidget(self.widgets["retire_task_button"])
+        self.tab_layout.addWidget(self.widgets["delete_task_button"])
+        self.tab_layout.addWidget(self.widgets["drop_down_menu"])
 
 
 # ==========================================================================================

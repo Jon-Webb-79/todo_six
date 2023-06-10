@@ -8,7 +8,6 @@ from PyQt6.QtWidgets import (
     QApplication,
     QFileDialog,
     QGridLayout,
-    QLabel,
     QMainWindow,
     QMessageBox,
     QTabWidget,
@@ -18,14 +17,7 @@ from PyQt6.QtWidgets import (
 
 from todo_six.database import ToDoDatabase
 from todo_six.menu_bar import MenuBar
-from todo_six.widgets import (
-    DayNightRadioButton,
-    DropDownMenu,
-    LineEdit,
-    ListWidget,
-    OpacitySlider,
-    PushButton,
-)
+from todo_six.widgets import DayNightRadioButton, OpacitySlider, Tab
 
 # ==========================================================================================
 # ==========================================================================================
@@ -125,6 +117,8 @@ class ToDoListView(QMainWindow, QWidget, ToDoListModel):
         self._create_initial_widgets()
         self._arrange_widgets()
 
+        self.tab_objects = {}
+
     # ------------------------------------------------------------------------------------------
 
     def set_day_theme(self) -> None:
@@ -145,34 +139,12 @@ class ToDoListView(QMainWindow, QWidget, ToDoListModel):
 
     # ------------------------------------------------------------------------------------------
 
-    def add_new_tab(self, tab_name, ok) -> None:
+    def add_new_tab(self, tab_name, ok, database) -> None:
         if ok and tab_name != "":
-            new_tab = QWidget()
-            new_tab_layout = QVBoxLayout(new_tab)
-
-            # Instantiate Widgets and add them to the layout
-            entry_field = LineEdit(self.fnt)
-            todo_list = ListWidget(self.fnt)
-            todo_list_label = QLabel("Todo List")
-            completed_list_label = QLabel("Completed List")
-            completed_list = ListWidget(self.fnt)
-            add_task_button = PushButton("Add Task", self.fnt)
-            retire_task_button = PushButton("Retire Task", self.fnt)
-            delete_task_button = PushButton("Delete Task", self.fnt)
-            drop_down_menu = DropDownMenu(["Day", "Week", "Month", "Year", "All"])
-
-            new_tab_layout.addWidget(entry_field)
-            new_tab_layout.addWidget(todo_list_label)
-            new_tab_layout.addWidget(todo_list)
-            new_tab_layout.addWidget(completed_list_label)
-            new_tab_layout.addWidget(completed_list)
-            new_tab_layout.addWidget(add_task_button)
-            new_tab_layout.addWidget(retire_task_button)
-            new_tab_layout.addWidget(delete_task_button)
-            new_tab_layout.addWidget(drop_down_menu)
-
-            # Add the new tab to the tab widget
-            self.tabs.addTab(new_tab, tab_name)
+            new_tab = Tab(self.fnt, tab_name, database)
+            self.tabs.addTab(new_tab.tab_widget, tab_name)
+            self.tab_objects[tab_name] = new_tab
+            self.tabs.addTab(new_tab.tab_widget, tab_name)
 
     # ------------------------------------------------------------------------------------------
 
@@ -237,7 +209,6 @@ class ToDoListController(ToDoListView):
         self.day_night_radio_button.night_button.clicked.connect(self.set_night_theme)
         self.opacity_slider.slider.valueChanged.connect(self.set_opacity)
 
-        self.database = None
         self.tab_database_map = {}
 
     # ------------------------------------------------------------------------------------------
@@ -265,8 +236,8 @@ class ToDoListController(ToDoListView):
                 msg.exec()
             else:
                 response = True
-                self.database = ToDoDatabase(file_name)
-                success, message = self.database.open_db()
+                database = ToDoDatabase(file_name)
+                success, message = database.open_db()
                 if not success:
                     msg = QMessageBox()
                     msg.setIcon(QMessageBox.Icon.Critical)
@@ -275,13 +246,13 @@ class ToDoListController(ToDoListView):
                     msg.exec()
                     break
                 else:
-                    success, message = self.database.create_tasks_table()
+                    success, message = database.create_tasks_table()
                 if success:
                     file_name_only = os.path.splitext(os.path.basename(file_name))[0]
                     if file_name_only in self.tab_database_map:
                         file_name_only += "-1"
-                    self.add_new_tab(file_name_only, success)
-                    self.tab_database_map[file_name_only] = self.database
+                    self.add_new_tab(file_name_only, success, database)
+                    self.tab_database_map[file_name_only] = database
                     print(f"Database '{file_name}' and task table created successfully.")
                     break
                 else:

@@ -37,6 +37,9 @@ library.  The widgets along with their public attributes are shown below.
 .. autoclass:: todo_six.widgets.Calendar
    :members:
 
+.. autoclass:: todo_six.widgets.Tab
+   :members:
+
 Menu Bar
 ========
 All menu bar items used in the todo list application are created from the **menu_bar.py**
