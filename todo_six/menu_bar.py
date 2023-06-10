@@ -23,7 +23,8 @@ class FileMenu:
     :param controller: A ToDoListController object
     """
 
-    def __init__(self):
+    def __init__(self, new_func):
+        self.new_func = new_func
         self.menu = QMenu("File")
         self._create_actions()
         self._add_actions()
@@ -42,6 +43,7 @@ class FileMenu:
         """
         Method that encodes the functionality of the New attribute
         """
+        self.new_func()
         print("Created New Database")
 
     # ------------------------------------------------------------------------------------------
@@ -135,10 +137,10 @@ class MenuBar(QMenuBar):
     :param controller: A ToDoListController object
     """
 
-    def __init__(self):
+    def __init__(self, new_func):
         super().__init__()
 
-        self.file_menu = FileMenu()
+        self.file_menu = FileMenu(new_func)
         self.history_menu = HistoryMenu()
 
         self.addMenu(self.file_menu.menu)

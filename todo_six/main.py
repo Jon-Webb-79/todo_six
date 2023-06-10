@@ -1,18 +1,22 @@
 # Import necessary packages here
+import os
 import sys
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QApplication,
+    QFileDialog,
     QGridLayout,
-    QHBoxLayout,
     QLabel,
     QMainWindow,
+    QMessageBox,
+    QTabWidget,
     QVBoxLayout,
     QWidget,
 )
 
+from todo_six.database import ToDoDatabase
 from todo_six.menu_bar import MenuBar
 from todo_six.widgets import (
     DayNightRadioButton,
@@ -100,7 +104,7 @@ class ToDoListView(QMainWindow, QWidget, ToDoListModel):
         self.vert = QVBoxLayout()
 
         # IMport menu options
-        self.menu_bar = MenuBar()
+        self.menu_bar = MenuBar(self.create_new_database)
         self.setMenuBar(self.menu_bar)
 
         # Set window properties
@@ -118,7 +122,7 @@ class ToDoListView(QMainWindow, QWidget, ToDoListModel):
         self.setCentralWidget(self.central_widget)
 
         # Add widgets
-        self._create_widgets()
+        self._create_initial_widgets()
         self._arrange_widgets()
 
     # ------------------------------------------------------------------------------------------
@@ -141,7 +145,97 @@ class ToDoListView(QMainWindow, QWidget, ToDoListModel):
 
     # ------------------------------------------------------------------------------------------
 
-    def _create_widgets(self) -> None:
+    def create_new_database(self) -> None:
+        """
+        Method that is connected to the New button and is used to create a new database
+        """
+        response = False
+        while response is False:
+            msg1 = "Create New Database"
+            msg2 = "SQLite Databases (*.db);;All Files (*)"
+            file_name, _ = QFileDialog.getSaveFileName(None, msg1, "", msg2)
+            if file_name:
+                if not file_name.endswith(".db"):  # ensure the file has .db extension
+                    file_name += ".db"
+            if os.path.exists(file_name):
+                msg1 = f"A database named '{file_name}' already exists. "
+                msg1 += "Please choose a different name."
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Icon.Critical)
+                msg.setText("Database Already Exists")
+                msg.setInformativeText(msg1)
+                msg.setWindowTitle("Error")
+                msg.exec()
+            else:
+                response = True
+                self.database = ToDoDatabase(file_name)
+                success, message = self.database.open_db()
+                if not success:
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Icon.Critical)
+                    msg.setText(message)
+                    msg.setWindowTitle("Error")
+                    msg.exec()
+                    break
+                else:
+                    success, message = self.database.create_tasks_table()
+                if success:
+                    file_name_only = os.path.splitext(os.path.basename(file_name))[0]
+                    self.add_new_tab(file_name_only, success)
+                    print(f"Database '{file_name}' and task table created successfully.")
+                    break
+                else:
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Icon.Critical)
+                    msg.setText(message)
+                    msg.setWindowTitle("Error")
+                    msg.exec()
+
+    # ------------------------------------------------------------------------------------------
+
+    def add_new_tab(self, tab_name, ok) -> None:
+        if ok and tab_name != "":
+            new_tab = QWidget()
+            new_tab_layout = QVBoxLayout(new_tab)
+
+            # Instantiate Widgets and add them to the layout
+            entry_field = LineEdit(self.fnt)
+            todo_list = ListWidget(self.fnt)
+            todo_list_label = QLabel("Todo List")
+            completed_list_label = QLabel("Completed List")
+            completed_list = ListWidget(self.fnt)
+            add_task_button = PushButton("Add Task", self.fnt)
+            retire_task_button = PushButton("Retire Task", self.fnt)
+            delete_task_button = PushButton("Delete Task", self.fnt)
+            drop_down_menu = DropDownMenu(["Day", "Week", "Month", "Year", "All"])
+
+            new_tab_layout.addWidget(entry_field)
+            new_tab_layout.addWidget(todo_list_label)
+            new_tab_layout.addWidget(todo_list)
+            new_tab_layout.addWidget(completed_list_label)
+            new_tab_layout.addWidget(completed_list)
+            new_tab_layout.addWidget(add_task_button)
+            new_tab_layout.addWidget(retire_task_button)
+            new_tab_layout.addWidget(delete_task_button)
+            new_tab_layout.addWidget(drop_down_menu)
+
+            # Add the new tab to the tab widget
+            self.tabs.addTab(new_tab, tab_name)
+
+    # ------------------------------------------------------------------------------------------
+
+    def set_opacity(self, value) -> None:
+        """
+        Changes the opacity of the application
+        """
+        # Convert the slider value (0-100) to opacity value (0.0-1.0)
+        opacity = value / 100.0
+        self.setWindowOpacity(opacity)
+
+    # ==========================================================================================
+    # PRIVATE-LIKE METHODS
+
+    def _create_initial_widgets(self) -> None:
         """
         This method instantiates all widgets for the todo_list application
         """
@@ -149,20 +243,8 @@ class ToDoListView(QMainWindow, QWidget, ToDoListModel):
         self.day_night_radio_button = DayNightRadioButton()
         self.opacity_slider = OpacitySlider()
 
-        self.entry_field = LineEdit(self.fnt)
-
-        self.todo_list = ListWidget(self.fnt)
-        self.todo_list_label = QLabel("Todo List")
-
-        self.completed_list_label = QLabel("Completed List")
-        self.completed_list = ListWidget(self.fnt)
-
-        # Use the custom Button class
-        self.add_task_button = PushButton("Add Task", self.fnt)
-        self.retire_task_button = PushButton("Retire Task", self.fnt)
-        self.delete_task_button = PushButton("Delete Task", self.fnt)
-
-        self.drop_down_menu = DropDownMenu(["Day", "Week", "Month", "Year", "All"])
+        # Setup Tab widget
+        self.tabs = QTabWidget(self.central_widget)
 
     # ------------------------------------------------------------------------------------------
 
@@ -170,74 +252,16 @@ class ToDoListView(QMainWindow, QWidget, ToDoListModel):
         """
         This method arranges all of the widgets for the todo_list application
         """
-        # Add text widgets
-        self.grid.addWidget(self.entry_field, 0, 0, 1, 2)
-        self.grid.addWidget(self.todo_list_label, 1, 1)
-        self.grid.addWidget(self.todo_list, 2, 1)
-        self.grid.addWidget(self.completed_list, 4, 1)
-
-        # Place buttons in vertical orientation, from top down
-        self.vert.addWidget(self.add_task_button, alignment=Qt.AlignmentFlag.AlignCenter)
-        self.vert.addWidget(
-            self.retire_task_button, alignment=Qt.AlignmentFlag.AlignCenter
-        )
-        self.vert.addWidget(
-            self.delete_task_button, alignment=Qt.AlignmentFlag.AlignCenter
-        )
-
-        # Calculate the maximum width and height among the buttons
-        max_width = max(
-            self.add_task_button.sizeHint().width(),
-            self.retire_task_button.sizeHint().width(),
-            self.delete_task_button.sizeHint().width(),
-        )
-
-        max_height = max(
-            self.add_task_button.sizeHint().height(),
-            self.retire_task_button.sizeHint().height(),
-            self.delete_task_button.sizeHint().height(),
-        )
-
-        # Set all buttons to the same size
-        self.add_task_button.setFixedSize(max_width + 10, max_height + 3)
-        self.retire_task_button.setFixedSize(max_width + 10, max_height + 3)
-        self.delete_task_button.setFixedSize(max_width + 10, max_height + 3)
-
-        # Add the vertical layout to the grid layout
-        self.grid.addLayout(self.vert, 2, 0, 5, 1)
-
-        self.vert.addStretch(2)
-        # self.grid.addLayout(self.vert, 1, 0)
-
         # Add day night radio button and opacity slider
-        self.grid.addWidget(self.day_night_radio_button, 5, 0)
+        self.grid.addWidget(self.day_night_radio_button, 0, 0)
         self.grid.addWidget(
-            self.opacity_slider, 5, 1, alignment=Qt.AlignmentFlag.AlignRight
+            self.opacity_slider, 0, 1, alignment=Qt.AlignmentFlag.AlignRight
         )
 
-        completed_list_layout = QHBoxLayout()
+        # Add the tab widget
+        self.grid.addWidget(self.tabs, 1, 0, 1, 2)
 
-        completed_list_layout.addWidget(self.completed_list_label)
-        completed_list_layout.addWidget(self.drop_down_menu)
-
-        # Replace the previous widget (QLabel) with the new layout
-        self.grid.addLayout(completed_list_layout, 3, 1)
-        self.grid.addWidget(self.completed_list, 4, 1)
-
-        # Adjust ListWidget width
-        self.todo_list.setMaximumWidth(700)
-        self.completed_list.setMaximumWidth(700)
         self.central_widget.setLayout(self.grid)
-
-    # ------------------------------------------------------------------------------------------
-
-    def set_opacity(self, value):
-        """
-        Changes the opacity of the application
-        """
-        # Convert the slider value (0-100) to opacity value (0.0-1.0)
-        opacity = value / 100.0
-        self.setWindowOpacity(opacity)
 
 
 # ==========================================================================================
@@ -260,6 +284,8 @@ class ToDoListController(ToDoListView):
         self.day_night_radio_button.day_button.clicked.connect(self.set_day_theme)
         self.day_night_radio_button.night_button.clicked.connect(self.set_night_theme)
         self.opacity_slider.slider.valueChanged.connect(self.set_opacity)
+
+        self.menu_bar
 
 
 # ==========================================================================================
