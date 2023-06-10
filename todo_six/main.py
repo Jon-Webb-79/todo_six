@@ -145,54 +145,6 @@ class ToDoListView(QMainWindow, QWidget, ToDoListModel):
 
     # ------------------------------------------------------------------------------------------
 
-    def create_new_database(self) -> None:
-        """
-        Method that is connected to the New button and is used to create a new database
-        """
-        response = False
-        while response is False:
-            msg1 = "Create New Database"
-            msg2 = "SQLite Databases (*.db);;All Files (*)"
-            file_name, _ = QFileDialog.getSaveFileName(None, msg1, "", msg2)
-            if file_name:
-                if not file_name.endswith(".db"):  # ensure the file has .db extension
-                    file_name += ".db"
-            if os.path.exists(file_name):
-                msg1 = f"A database named '{file_name}' already exists. "
-                msg1 += "Please choose a different name."
-                msg = QMessageBox()
-                msg.setIcon(QMessageBox.Icon.Critical)
-                msg.setText("Database Already Exists")
-                msg.setInformativeText(msg1)
-                msg.setWindowTitle("Error")
-                msg.exec()
-            else:
-                response = True
-                self.database = ToDoDatabase(file_name)
-                success, message = self.database.open_db()
-                if not success:
-                    msg = QMessageBox()
-                    msg.setIcon(QMessageBox.Icon.Critical)
-                    msg.setText(message)
-                    msg.setWindowTitle("Error")
-                    msg.exec()
-                    break
-                else:
-                    success, message = self.database.create_tasks_table()
-                if success:
-                    file_name_only = os.path.splitext(os.path.basename(file_name))[0]
-                    self.add_new_tab(file_name_only, success)
-                    print(f"Database '{file_name}' and task table created successfully.")
-                    break
-                else:
-                    msg = QMessageBox()
-                    msg.setIcon(QMessageBox.Icon.Critical)
-                    msg.setText(message)
-                    msg.setWindowTitle("Error")
-                    msg.exec()
-
-    # ------------------------------------------------------------------------------------------
-
     def add_new_tab(self, tab_name, ok) -> None:
         if ok and tab_name != "":
             new_tab = QWidget()
@@ -285,7 +237,59 @@ class ToDoListController(ToDoListView):
         self.day_night_radio_button.night_button.clicked.connect(self.set_night_theme)
         self.opacity_slider.slider.valueChanged.connect(self.set_opacity)
 
-        self.menu_bar
+        self.database = None
+        self.tab_database_map = {}
+
+    # ------------------------------------------------------------------------------------------
+
+    def create_new_database(self) -> None:
+        """
+        Method that is connected to the New button and is used to create a new database
+        """
+        response = False
+        while response is False:
+            msg1 = "Create New Database"
+            msg2 = "SQLite Databases (*.db);;All Files (*)"
+            file_name, _ = QFileDialog.getSaveFileName(None, msg1, "", msg2)
+            if file_name:
+                if not file_name.endswith(".db"):  # ensure the file has .db extension
+                    file_name += ".db"
+            if os.path.exists(file_name):
+                msg1 = f"A database named '{file_name}' already exists. "
+                msg1 += "Please choose a different name."
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Icon.Critical)
+                msg.setText("Database Already Exists")
+                msg.setInformativeText(msg1)
+                msg.setWindowTitle("Error")
+                msg.exec()
+            else:
+                response = True
+                self.database = ToDoDatabase(file_name)
+                success, message = self.database.open_db()
+                if not success:
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Icon.Critical)
+                    msg.setText(message)
+                    msg.setWindowTitle("Error")
+                    msg.exec()
+                    break
+                else:
+                    success, message = self.database.create_tasks_table()
+                if success:
+                    file_name_only = os.path.splitext(os.path.basename(file_name))[0]
+                    if file_name_only in self.tab_database_map:
+                        file_name_only += "-1"
+                    self.add_new_tab(file_name_only, success)
+                    self.tab_database_map[file_name_only] = self.database
+                    print(f"Database '{file_name}' and task table created successfully.")
+                    break
+                else:
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Icon.Critical)
+                    msg.setText(message)
+                    msg.setWindowTitle("Error")
+                    msg.exec()
 
 
 # ==========================================================================================
@@ -313,4 +317,7 @@ if __name__ == "__main__":
     day = "../data/style_sheets/night.qss"
     night = "../data/style_sheets/night.qss"
     main(day, night)
+
+# TODO move create_new_database from ToDoListView to ToDoListController class
+# TODO implement a dictionary of databases
 # eof
