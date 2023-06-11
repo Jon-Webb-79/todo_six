@@ -251,7 +251,4 @@ if __name__ == "__main__":
     day = "../data/style_sheets/night.qss"
     night = "../data/style_sheets/night.qss"
     main(day, night)
-
-# TODO move create_new_database from ToDoListView to ToDoListController class
-# TODO implement a dictionary of databases
 # eof

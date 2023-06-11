@@ -181,7 +181,8 @@ def test_create_tasks_table(tododb_manager):
 
 @pytest.mark.tododatabase
 def test_insert_task(tododb_manager):
-    success, _ = tododb_manager.insert_task("Test Task1")
+    success, _, task_id = tododb_manager.insert_task("Test Task1")
+    assert task_id == 1
     assert success
 
 
@@ -190,7 +191,7 @@ def test_insert_task(tododb_manager):
 
 @pytest.mark.tododatabase
 def test_complete_task(tododb_manager):
-    success, _ = tododb_manager.insert_task("Test Task2")
+    success, _, _ = tododb_manager.insert_task("Test Task2")
     assert success
     task_id = 1  # For simplicity, assume the task_id is 1
     success, _ = tododb_manager.complete_task(task_id)
@@ -202,7 +203,7 @@ def test_complete_task(tododb_manager):
 
 @pytest.mark.tododatabase
 def test_delete_task(tododb_manager):
-    success, _ = tododb_manager.insert_task("Test Task3")
+    success, _, _ = tododb_manager.insert_task("Test Task3")
     assert success
     task_id = 1  # For simplicity, assume the task_id is 1
     success, _ = tododb_manager.delete_task(task_id)
@@ -214,7 +215,7 @@ def test_delete_task(tododb_manager):
 
 @pytest.mark.tododatabase
 def test_select_open_tasks(tododb_manager):
-    success, _ = tododb_manager.insert_task("Test Task4")
+    success, _, _ = tododb_manager.insert_task("Test Task4")
     assert success
     success, tasks, _ = tododb_manager.select_open_tasks()
     expected = ["Test Task2", "Test Task3", "Test Task4"]
@@ -227,7 +228,7 @@ def test_select_open_tasks(tododb_manager):
 
 @pytest.mark.tododatabase
 def test_select_closed_tasks(tododb_manager):
-    success, _ = tododb_manager.insert_task("Test Task5")
+    success, _, _ = tododb_manager.insert_task("Test Task5")
     assert success
     task_id = 3  # For simplicity, assume the task_id is 1
     success, _ = tododb_manager.complete_task(task_id)

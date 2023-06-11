@@ -450,7 +450,7 @@ class ToDoDatabase(SQLiteManager):
 
     # ------------------------------------------------------------------------------------------
 
-    def insert_task(self, task) -> tuple[bool, str]:
+    def insert_task(self, task) -> tuple[bool, str, int]:
         """
         Method to insert a task to the tasks table of a database
 
@@ -460,13 +460,16 @@ class ToDoDatabase(SQLiteManager):
                   contains a description of the result
         """
         start_date = datetime.now().strftime("%Y-%m-%d")
-        query = "INSERT INTO tasks (task, start_date) VALUES (?, ?);"
-        params = (task, start_date)
-        success, _, message = self.db_query(query, params)
+        query = QSqlQuery(self.con)
+        query.prepare("INSERT INTO tasks (task, start_date) VALUES (?, ?);")
+        query.addBindValue(task)
+        query.addBindValue(start_date)
+        success = query.exec()
         if success:
-            return True, f"Task '{task}' successfully added to tasks."
+            task_id = query.lastInsertId()
+            return True, f"Task '{task}' successfully added to tasks.", task_id
         else:
-            return False, message
+            return False, query.lastError().text(), 0
 
     # ------------------------------------------------------------------------------------------
 
