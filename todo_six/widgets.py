@@ -1,6 +1,6 @@
 # Import necessary packages here
 from PyQt6.QtCore import QDate, Qt
-from PyQt6.QtGui import QFont
+from PyQt6.QtGui import QFont, QKeySequence, QShortcut
 from PyQt6.QtWidgets import (
     QButtonGroup,
     QCalendarWidget,
@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
     QLabel,
     QLineEdit,
     QListWidget,
+    QMessageBox,
     QPushButton,
     QRadioButton,
     QSlider,
@@ -348,7 +349,7 @@ class Tab:
     :param db: A ToDoDatabase object
     """
 
-    def __init__(self, fnt: QFont, tab_name: str, db: ToDoDatabase = None):
+    def __init__(self, fnt: QFont, tab_name: str, db: ToDoDatabase):
         self.tab_name = tab_name
         self.tab_widget = QWidget()
         self.tab_layout = QVBoxLayout(self.tab_widget)
@@ -375,6 +376,50 @@ class Tab:
         self.tab_layout.addWidget(self.widgets["retire_task_button"])
         self.tab_layout.addWidget(self.widgets["delete_task_button"])
         self.tab_layout.addWidget(self.widgets["drop_down_menu"])
+
+        self.widgets["add_task_button"].clicked.connect(self._add_task)
+        self.shortcut = QShortcut(QKeySequence(Qt.Key.Key_Return), self.tab_widget)
+        self.shortcut.activated.connect(self._add_task)
+
+    # ------------------------------------------------------------------------------------------
+
+    def _add_task(self):
+        """
+        Method to add a task to the todo_list window of the appropriate tab
+        """
+        task_text = self.widgets["entry_field"].text()
+        if task_text:
+            success, message = self.db.insert_task(task_text)
+            if not success:
+                # Display a message box if there's an error
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Icon.Critical)
+                msg.setText("Error")
+                msg.setInformativeText(message)
+                msg.setWindowTitle("Error")
+                msg.exec()
+                return
+            # Get the last inserted id from the database
+            last_id = self._get_largest_id_in_todo_list()
+            new_id = last_id + 1
+            self.widgets["todo_list"].addItem(f"{new_id}. {task_text}")
+            self.widgets["entry_field"].setText("")  # clear the entry field
+
+    # ------------------------------------------------------------------------------------------
+
+    def _get_largest_id_in_todo_list(self) -> int:
+        """
+        Return the largest ID currently in the todo_list.
+        """
+        max_id = 0
+        for i in range(self.widgets["todo_list"].count()):
+            item_text = self.widgets["todo_list"].item(i).text()
+            item_id = int(
+                item_text.split(".")[0]
+            )  # assuming item_text is in "id: text" format
+            if item_id > max_id:
+                max_id = item_id
+        return max_id
 
 
 # ==========================================================================================

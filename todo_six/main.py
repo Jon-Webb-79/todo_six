@@ -209,7 +209,12 @@ class ToDoListController(ToDoListView):
         self.day_night_radio_button.night_button.clicked.connect(self.set_night_theme)
         self.opacity_slider.slider.valueChanged.connect(self.set_opacity)
 
-        self.tab_database_map = {}
+        # - List to store the names of each tabase, so there are no repeated tabe names
+        #   if a name exists in a different directory
+        self.tab_database_map = []
+
+        # - List to store entire database path length
+        self.db_path_length = []
 
     # ------------------------------------------------------------------------------------------
 
@@ -252,7 +257,8 @@ class ToDoListController(ToDoListView):
                     if file_name_only in self.tab_database_map:
                         file_name_only += "-1"
                     self.add_new_tab(file_name_only, success, database)
-                    self.tab_database_map[file_name_only] = database
+                    self.tab_database_map.append(file_name_only)
+                    self.db_path_length.append(file_name)
                     print(f"Database '{file_name}' and task table created successfully.")
                     break
                 else:
