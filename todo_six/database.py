@@ -2,7 +2,6 @@
 import sys
 import uuid
 from datetime import datetime, timedelta
-from typing import Protocol
 
 import pandas as pd
 from PyQt6.QtSql import QSqlDatabase, QSqlQuery
@@ -18,103 +17,6 @@ from PyQt6.QtSql import QSqlDatabase, QSqlQuery
 # ==========================================================================================
 # ==========================================================================================
 # Insert Code here
-
-
-class RelationalDBManager(Protocol):
-    def open_db(self) -> tuple[bool, str]:
-        """
-        Template method for opening an existing database
-
-        :return result: A tuple containing a boolean and a string.  A boolean of
-                        True indicates the operation was successful, and the string
-                        contains a description of the result
-        """
-        ...
-
-    # ------------------------------------------------------------------------------------------
-
-    def close_db(self) -> tuple[bool, str]:
-        """
-        Template method for closing an existing database
-
-        :return result: A tuple containing a boolean and a string.  A boolean of
-                        True indicates the operation was successful, and the string
-                        contains a description of the result
-        """
-        ...
-
-    # ------------------------------------------------------------------------------------------
-
-    def db_query(self, query: str) -> tuple[bool, QSqlQuery, str]:
-        """
-        Template method for quering a database
-
-        :param query: A string query of a database
-        :return result: A tuple containing a boolean and a string.  A boolean of
-                        True indicates the operation was successful, and the string
-                        contains a description of the result
-        """
-        ...
-
-    # ------------------------------------------------------------------------------------------
-
-    def table_schema(self, table_name: str) -> tuple[bool, dict[str, str], str]:
-        """
-        Method to return the column names and datatypes for a table
-
-        :param table_name: The name of the table
-        :return result: A tuple containing a boolean and a dictionary. A boolean of
-                        True indicates the operation was successful, and the dictionary
-                        contains the names of each column and the type associated with
-                        each column
-        """
-        ...
-
-    # ------------------------------------------------------------------------------------------
-
-    def table_exists(self, table_name: str) -> tuple[bool, str]:
-        """
-        Method to check if a table exists in the database
-
-        :param table_name: The name of the table
-        :return: True if the table exists, False otherwise
-        """
-        ...
-
-    # ------------------------------------------------------------------------------------------
-
-    def db_schema(self) -> tuple[bool, dict[str, dict[str, str]], str]:
-        """
-        Method to return the column names and datatypes for all tables in the database.
-
-        :return result: A tuple containing a boolean and a nested dictionary. A boolean
-                        of True indicates the operation was successful, and the nested
-                        dictionary contains the names of each table as keys, each
-                        containing a dictionary of column names and the type associated
-                        with each column. The string is a description of the result.
-        """
-        ...
-
-    # ------------------------------------------------------------------------------------------
-
-    def create_table(
-        self, table_name: str, column_names: list[str], data_types: list[str]
-    ) -> tuple[bool, str]:
-        """
-        Method to create a table in the database.
-
-        :param table_name: The name of the table
-        :param column_names: A list of the names of columns
-        :param data_types: A list of data types for each column
-        :return: A tuple containing a boolean and a string. A boolean of
-                 True indicates the operation was successful, and the string
-                 contains a description of the result
-        """
-        ...
-
-
-# ==========================================================================================
-# ==========================================================================================
 
 
 class SQLiteManager(QSqlDatabase):
