@@ -387,12 +387,8 @@ class Tab:
 
         self.widgets["delete_task_button"].clicked.connect(self._delete_task)
 
-        self.widgets["todo_list"].itemSelectionChanged.connect(
-            self._clear_other_selections
-        )
-        self.widgets["completed_list"].itemSelectionChanged.connect(
-            self._clear_other_selections
-        )
+        self.widgets["todo_list"].itemSelectionChanged.connect(self._clear_other_selections)
+        self.widgets["completed_list"].itemSelectionChanged.connect(self._clear_other_selections)
         self.delete_mode = False
 
         self.todo_tasks = {}
@@ -478,8 +474,7 @@ class Tab:
             msg.setInformativeText(message)
             msg.setWindowTitle("Error")
             msg.exec()
-
-    # ------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------
 
     def _clear_other_selections(self):
         """
@@ -491,13 +486,11 @@ class Tab:
                 self.widgets["completed_list"].clearSelection()
         else:
             self.widgets["todo_list"].clearSelection()
-
-    # ------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------
 
     def _delete_task(self) -> None:
         """
-        Method to delete the selected task from the database and the respective list
-        window.
+        Method to delete the selected task from the database and the respective list window.
         """
         # 1. Determine which list the user is interacting with
         selected_list = None
@@ -532,15 +525,12 @@ class Tab:
         if confirm == QMessageBox.StandardButton.Yes:
             success, message = self.db.delete_task(db_task_id)
             if not success:
-                QMessageBox.warning(
-                    self.tab_widget, "Error", f"Failed to delete task: {message}"
-                )
+                QMessageBox.warning(self.tab_widget, "Error", f"Failed to delete task: {message}")
                 return
 
             # 5. Refresh the tasks
             self._refresh_tasks()
-
-    # ------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------
 
     def _refresh_tasks(self):
         """
@@ -551,9 +541,7 @@ class Tab:
         if success:
             self._populate_tasks(df, self.widgets["todo_list"], self.todo_tasks)
         else:
-            QMessageBox.warning(
-                self.tab_widget, "Error", f"Failed to query open tasks: {message}"
-            )
+            QMessageBox.warning(self.tab_widget, "Error", f"Failed to query open tasks: {message}")
 
         # Refresh the completed tasks
         time_frame = self.widgets["drop_down_menu"].currentText().upper()
@@ -561,22 +549,18 @@ class Tab:
         if success:
             self._populate_tasks(df, self.widgets["completed_list"], self.completed_tasks)
         else:
-            QMessageBox.warning(
-                self.tab_widget, "Error", f"Failed to query completed tasks: {message}"
-            )
-
-    # ------------------------------------------------------------------------------------------
+            QMessageBox.warning(self.tab_widget, "Error", f"Failed to query completed tasks: {message}")
+# ------------------------------------------------------------------------------------------
 
     def _populate_tasks(self, df, list_widget, task_dict):
         """
-        Method to populate a list widget with tasks from a DataFrame and update a
-        corresponding task dictionary.
+        Method to populate a list widget with tasks from a DataFrame and update a corresponding task dictionary.
         """
         list_widget.clear()
         task_dict.clear()
         for idx, row in enumerate(df.iterrows(), start=1):
-            task_id = row[1]["task_id"]
-            task = row[1]["task"]
+            task_id = row[1]['task_id']
+            task = row[1]['task']
             list_widget.addItem(f"{idx}. {task}")
             task_dict[idx] = task_id
 
