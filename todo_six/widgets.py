@@ -386,6 +386,14 @@ class Tab:
         self.shortcut.activated.connect(self._retire_task)
 
         self.widgets["delete_task_button"].clicked.connect(self._delete_task)
+        self.delete_all_shortcut = QShortcut(
+            QKeySequence("Shift+Delete"), self.tab_widget
+        )
+        self.delete_all_shortcut.activated.connect(self._delete_task)
+
+        self.widgets["drop_down_menu"].currentTextChanged.connect(
+            self._update_completed_tasks
+        )
 
         self.widgets["todo_list"].itemSelectionChanged.connect(
             self._clear_other_selections
@@ -539,6 +547,23 @@ class Tab:
 
             # 5. Refresh the tasks
             self._refresh_tasks()
+
+    # ------------------------------------------------------------------------------------------
+
+    def _update_completed_tasks(self):
+        """
+        Method to refresh the completed tasks list based on the selected time frame
+        from the drop_down_menu.
+        """
+        time_frame = self.widgets["drop_down_menu"].currentText().upper()
+        success, df, message = self.db.select_closed_tasks(time_frame)
+        if success:
+            self._populate_tasks(
+                df, self.widgets["completed_tasks"], self.completed_tasks
+            )
+        else:
+            msg = f"Failed to query completed tasks: {message}"
+            QMessageBox.warning(self.tab_widget, "Error", msg)
 
     # ------------------------------------------------------------------------------------------
 
