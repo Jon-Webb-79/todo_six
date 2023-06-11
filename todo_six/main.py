@@ -248,7 +248,7 @@ def main(day_sheet: str, night_sheet: str) -> None:
 # ==========================================================================================
 
 if __name__ == "__main__":
-    day = "../data/style_sheets/night.qss"
+    day = "../data/style_sheets/day.qss"
     night = "../data/style_sheets/night.qss"
     main(day, night)
 # eof

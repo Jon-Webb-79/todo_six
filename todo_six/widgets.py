@@ -381,7 +381,12 @@ class Tab:
         self.shortcut = QShortcut(QKeySequence(Qt.Key.Key_Return), self.tab_widget)
         self.shortcut.activated.connect(self._add_task)
 
+        self.widgets["retire_task_button"].clicked.connect(self._retire_task)
+        self.shortcut = QShortcut(QKeySequence(Qt.Key.Key_Delete), self.tab_widget)
+        self.shortcut.activated.connect(self._retire_task)
+
         self.todo_tasks = {}
+        self.completed_tasks = {}
 
     # ------------------------------------------------------------------------------------------
 
@@ -423,6 +428,64 @@ class Tab:
             if item_id > max_id:
                 max_id = item_id
         return max_id
+
+    # ------------------------------------------------------------------------------------------
+
+    def _retire_task(self) -> None:
+        """
+        Method to retire a task from the todo_list window of the appropriate tab
+        """
+        # 1. Retire the selected task
+        current_task = self.widgets["todo_list"].currentItem()
+        if not current_task:
+            return  # If no item selected, do nothing
+        task_id, _ = current_task.text().split(". ", 1)
+        db_task_id = self.todo_tasks[int(task_id)]
+        success, message = self.db.complete_task(db_task_id)
+        if not success:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setText("Error")
+            msg.setInformativeText(message)
+            msg.setWindowTitle("Error")
+            msg.exec()
+            return
+
+        # 2. Clear the completed list
+        self.widgets["completed_list"].clear()
+
+        # 3. Query the database for completed tasks
+        time_frame = self.widgets["drop_down_menu"].currentText().upper()
+        success, df, message = self.db.select_closed_tasks(time_frame)
+        if success:
+            # 4. Populate the completed list with tasks from the query
+            for idx, row in enumerate(df.iterrows(), start=1):
+                self.widgets["completed_list"].addItem(f"{idx}. {row[1]['task']}")
+                self.completed_tasks[idx] = db_task_id
+        else:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setText("Error")
+            msg.setInformativeText(message)
+            msg.setWindowTitle("Error")
+            msg.exec()
+
+        # 5. Remove the updated task from the todo list
+        self.widgets["todo_list"].takeItem(self.widgets["todo_list"].row(current_task))
+        del self.todo_tasks[int(task_id)]  # remove from our tracking dictionary
+
+        # 6. Reorder tasks in the todo list
+        items_text = [
+            self.widgets["todo_list"].item(i).text().split(". ", 1)[1]
+            for i in range(self.widgets["todo_list"].count())
+        ]
+        self.widgets["todo_list"].clear()  # clear list
+        temp_dict = self.todo_tasks.copy()
+        self.todo_tasks = {}
+        for i, text in enumerate(items_text):  # populate with ordered tasks
+            new_id = i + 1  # re-ordering numbering from 1
+            self.widgets["todo_list"].addItem(f"{new_id}. {text}")
+            self.todo_tasks[new_id] = temp_dict[int(list(temp_dict.keys())[i])]
 
 
 # ==========================================================================================
