@@ -32,50 +32,7 @@ from todo_six.widgets import DayNightRadioButton, OpacitySlider, Tab
 # Insert Code here
 
 
-class ToDoListModel:
-    """
-    The ToDoListModel class handles all data manipulation for the todo_six
-    application
-    """
-
-    def __init__(self):
-        # Initialize your model data here
-        self.tasks = []
-        self.tasks_id = []
-
-    # ------------------------------------------------------------------------------------------
-
-    def add_task(self, task: str, task_id: int) -> None:
-        """
-        Adds an item to the tasks list
-
-        :param task: The task to be added
-        """
-        self.tasks.append(task)
-        self.tasks_id.append(task_id)
-
-    # ------------------------------------------------------------------------------------------
-
-    def remove_task(self, task_id: int) -> bool:
-        """
-        This method will remove items from the tasks and tasks_id lists
-
-        :param task_id: The unique id of the item to be removed
-        """
-        if task_id not in self.tasks_id:
-            sys.stderr.write(f"Task id {task_id} not in list")
-            return False
-        index = self.tasks_id.index(task_id)
-        self.tasks.pop(index)
-        self.tasks_id.pop(index)
-        return True
-
-
-# ==========================================================================================
-# ==========================================================================================
-
-
-class ToDoListView(QMainWindow, QWidget, ToDoListModel):
+class ToDoListView(QMainWindow, QWidget):
     """
     Class that integrates the application into a main window with tabs. This tab
     will also act as the View class in a Model, View, Controller architecture
