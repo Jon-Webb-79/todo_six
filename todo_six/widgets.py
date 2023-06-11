@@ -381,6 +381,8 @@ class Tab:
         self.shortcut = QShortcut(QKeySequence(Qt.Key.Key_Return), self.tab_widget)
         self.shortcut.activated.connect(self._add_task)
 
+        self.todo_tasks = {}
+
     # ------------------------------------------------------------------------------------------
 
     def _add_task(self):
@@ -389,7 +391,7 @@ class Tab:
         """
         task_text = self.widgets["entry_field"].text()
         if task_text:
-            success, message = self.db.insert_task(task_text)
+            success, message, task_id = self.db.insert_task(task_text)
             if not success:
                 # Display a message box if there's an error
                 msg = QMessageBox()
@@ -403,6 +405,7 @@ class Tab:
             last_id = self._get_largest_id_in_todo_list()
             new_id = last_id + 1
             self.widgets["todo_list"].addItem(f"{new_id}. {task_text}")
+            self.todo_tasks[new_id] = task_id
             self.widgets["entry_field"].setText("")  # clear the entry field
 
     # ------------------------------------------------------------------------------------------
