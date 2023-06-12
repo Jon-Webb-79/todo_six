@@ -586,9 +586,7 @@ class Tab(QWidget):
         time_frame = self.widgets["drop_down_menu"].currentText().upper()
         success, df, message = self.db.select_closed_tasks(time_frame)
         if success:
-            self._populate_tasks(
-                df, self.widgets["completed_tasks"], self.completed_tasks
-            )
+            self._populate_tasks(df, self.widgets["completed_list"], self.completed_tasks)
         else:
             msg = f"Failed to query completed tasks: {message}"
             QMessageBox.warning(self, "Error", msg)

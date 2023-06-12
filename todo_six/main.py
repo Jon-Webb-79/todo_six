@@ -314,7 +314,9 @@ def main(day_sheet: str, night_sheet: str) -> None:
 
 # ==========================================================================================
 # ==========================================================================================
-
+# TODO Add connection to Close menu bar option that closes all connections but not app
+# TODO Add connection to close app to close all connections, tabs and apps
+# TODO Test time_frame drop down menu for tasks completed yesterday
 if __name__ == "__main__":
     day = "../data/style_sheets/day.qss"
     night = "../data/style_sheets/night.qss"
