@@ -53,8 +53,8 @@ class ToDoListView(QMainWindow, QWidget):
         self.vert = QVBoxLayout()
 
         # IMport menu options
-        self.menu_bar = MenuBar(self.create_new_database)
-        self.setMenuBar(self.menu_bar)
+        # self.menu_bar = MenuBar(self.create_new_database)
+        # self.setMenuBar(self.menu_bar)
 
         # Set window properties
         self.setWindowTitle("Todo List")
@@ -99,9 +99,11 @@ class ToDoListView(QMainWindow, QWidget):
     def add_new_tab(self, tab_name, ok, database) -> None:
         if ok and tab_name != "":
             new_tab = Tab(self.fnt, tab_name, database)
-            self.tabs.addTab(new_tab.tab_widget, tab_name)
+            self.tabs.addTab(new_tab, tab_name)
             self.tab_objects[tab_name] = new_tab
-            self.tabs.addTab(new_tab.tab_widget, tab_name)
+            new_tab_index = self.tabs.addTab(new_tab, tab_name)
+            self.tabs.setCurrentIndex(new_tab_index)
+            self.tabs.setTabsClosable(True)
 
     # ------------------------------------------------------------------------------------------
 
@@ -173,6 +175,12 @@ class ToDoListController(ToDoListView):
         # - List to store entire database path length
         self.db_path_length = []
 
+        # IMport menu options
+        self.menu_bar = MenuBar(self.create_new_database, self.open_database)
+        self.setMenuBar(self.menu_bar)
+
+        self.tabs.tabCloseRequested.connect(self.close_tab)
+
     # ------------------------------------------------------------------------------------------
 
     def create_new_database(self) -> None:
@@ -224,6 +232,66 @@ class ToDoListController(ToDoListView):
                     msg.setText(message)
                     msg.setWindowTitle("Error")
                     msg.exec()
+
+    # ------------------------------------------------------------------------------------------
+
+    def open_database(self) -> None:
+        """
+        Method that is connected to the Open button and is used to open an existing
+        database.
+        """
+        while True:
+            msg1 = "Open Existing Database"
+            msg2 = "SQLite Databases (*.db);;All Files (*)"
+            file_name, _ = QFileDialog.getOpenFileName(None, msg1, "", msg2)
+            if file_name:
+                if file_name in self.db_path_length:
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Icon.Critical)
+                    msg.setText(
+                        "This database is already open. Please select another file."
+                    )
+                    msg.setWindowTitle("Error")
+                    msg.exec()
+                elif os.path.exists(file_name):
+                    database = ToDoDatabase(file_name)
+                    success, message = database.open_db()
+                    if not success:
+                        msg = QMessageBox()
+                        msg.setIcon(QMessageBox.Icon.Critical)
+                        msg.setText(message)
+                        msg.setWindowTitle("Error")
+                        msg.exec()
+                        return
+                    else:
+                        file_name_only = os.path.splitext(os.path.basename(file_name))[0]
+                        if file_name_only in self.tab_database_map:
+                            file_name_only += "-1"
+                        self.add_new_tab(file_name_only, success, database)
+                        self.tab_database_map.append(file_name_only)
+                        self.db_path_length.append(file_name)
+                        print(f"Database '{file_name}' opened successfully.")
+                        break
+                else:
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Icon.Critical)
+                    msg.setText("File not found")
+                    msg.setWindowTitle("Error")
+                    msg.exec()
+                    break
+            else:
+                break
+
+    # ------------------------------------------------------------------------------------------
+
+    def close_tab(self, index):
+        """
+        Closes the tab at the given index.
+        """
+        tab = self.tabs.widget(index)
+        tab.db.remove_db()
+        self.tabs.removeTab(index)  # this will remove the tab from the QTabWidget
+        tab.deleteLater()  # this will delete the tab from memory
 
 
 # ==========================================================================================

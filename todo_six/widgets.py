@@ -340,7 +340,7 @@ class Calendar(QCalendarWidget):
 # ==========================================================================================
 
 
-class Tab:
+class Tab(QWidget):
     """
     Class to set a tab instantiation for the todo_six application.
 
@@ -350,9 +350,9 @@ class Tab:
     """
 
     def __init__(self, fnt: QFont, tab_name: str, db: ToDoDatabase):
+        super().__init__()
         self.tab_name = tab_name
-        self.tab_widget = QWidget()
-        self.tab_layout = QVBoxLayout(self.tab_widget)
+        self.tab_layout = QVBoxLayout(self)
         self.db = db
 
         self.widgets = {
@@ -378,17 +378,15 @@ class Tab:
         self.tab_layout.addWidget(self.widgets["drop_down_menu"])
 
         self.widgets["add_task_button"].clicked.connect(self._add_task)
-        self.shortcut = QShortcut(QKeySequence(Qt.Key.Key_Return), self.tab_widget)
+        self.shortcut = QShortcut(QKeySequence(Qt.Key.Key_Return), self)
         self.shortcut.activated.connect(self._add_task)
 
         self.widgets["retire_task_button"].clicked.connect(self._retire_task)
-        self.shortcut = QShortcut(QKeySequence(Qt.Key.Key_Delete), self.tab_widget)
+        self.shortcut = QShortcut(QKeySequence(Qt.Key.Key_Delete), self)
         self.shortcut.activated.connect(self._retire_task)
 
         self.widgets["delete_task_button"].clicked.connect(self._delete_task)
-        self.delete_all_shortcut = QShortcut(
-            QKeySequence("Shift+Delete"), self.tab_widget
-        )
+        self.delete_all_shortcut = QShortcut(QKeySequence("Shift+Delete"), self)
         self.delete_all_shortcut.activated.connect(self._delete_task)
 
         self.widgets["drop_down_menu"].currentTextChanged.connect(
@@ -405,6 +403,38 @@ class Tab:
 
         self.todo_tasks = {}
         self.completed_tasks = {}
+
+        self._load_tasks_from_database()
+
+    # ------------------------------------------------------------------------------------------
+
+    def _load_tasks_from_database(self):
+        """
+        A method to load tasks from the database. The tasks will be added to the
+        appropriate task list and also to the corresponding task dictionary.
+        """
+
+        # Query the database for open tasks
+        success, open_tasks, _ = self.db.select_open_tasks()
+
+        # Iterate over the open tasks and add them to the todo list and dictionary
+        if success:
+            for _, row in open_tasks.iterrows():
+                task_id = row["task_id"]
+                task_name = row["task"]
+                self.widgets["todo_list"].addItem(task_name)
+                self.todo_tasks[task_id] = task_name
+
+        time_frame = self.widgets["drop_down_menu"].currentText().upper()
+        success, closed_tasks, _ = self.db.select_closed_tasks(time_frame)
+
+        # Iterate over the closed tasks and add them to the completed list and dictionary
+        if success:
+            for _, row in closed_tasks.iterrows():
+                task_id = row["task_id"]
+                task_name = row["task"]
+                self.widgets["completed_list"].addItem(task_name)
+                self.completed_tasks[task_id] = task_name
 
     # ------------------------------------------------------------------------------------------
 
@@ -494,7 +524,7 @@ class Tab:
         Method to ensure that only one task can be highlighted at a time.
         """
         if not self.delete_mode:  # Skip clearing if we're in delete mode
-            sender = self.tab_widget.sender()
+            sender = self.sender()
             if sender is self.widgets["todo_list"]:
                 self.widgets["completed_list"].clearSelection()
         else:
@@ -521,7 +551,7 @@ class Tab:
             task_dict = self.completed_tasks
 
         if selected_item is None:
-            QMessageBox.warning(self.tab_widget, "Error", "No task selected.")
+            QMessageBox.warning(self, "Error", "No task selected.")
             return
 
         # 2. Determine the task id
@@ -530,7 +560,7 @@ class Tab:
 
         # 3. Confirmation window
         confirm = QMessageBox.question(
-            self.tab_widget,
+            self,
             "Confirm Deletion",
             "Are you sure you want to delete the selected task?",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
@@ -540,9 +570,7 @@ class Tab:
         if confirm == QMessageBox.StandardButton.Yes:
             success, message = self.db.delete_task(db_task_id)
             if not success:
-                QMessageBox.warning(
-                    self.tab_widget, "Error", f"Failed to delete task: {message}"
-                )
+                QMessageBox.warning(self, "Error", f"Failed to delete task: {message}")
                 return
 
             # 5. Refresh the tasks
@@ -563,7 +591,7 @@ class Tab:
             )
         else:
             msg = f"Failed to query completed tasks: {message}"
-            QMessageBox.warning(self.tab_widget, "Error", msg)
+            QMessageBox.warning(self, "Error", msg)
 
     # ------------------------------------------------------------------------------------------
 
@@ -576,9 +604,7 @@ class Tab:
         if success:
             self._populate_tasks(df, self.widgets["todo_list"], self.todo_tasks)
         else:
-            QMessageBox.warning(
-                self.tab_widget, "Error", f"Failed to query open tasks: {message}"
-            )
+            QMessageBox.warning(self, "Error", f"Failed to query open tasks: {message}")
 
         # Refresh the completed tasks
         time_frame = self.widgets["drop_down_menu"].currentText().upper()
@@ -587,7 +613,7 @@ class Tab:
             self._populate_tasks(df, self.widgets["completed_list"], self.completed_tasks)
         else:
             QMessageBox.warning(
-                self.tab_widget, "Error", f"Failed to query completed tasks: {message}"
+                self, "Error", f"Failed to query completed tasks: {message}"
             )
 
     # ------------------------------------------------------------------------------------------
