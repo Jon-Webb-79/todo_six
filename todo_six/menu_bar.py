@@ -23,9 +23,10 @@ class FileMenu:
     :param controller: A ToDoListController object
     """
 
-    def __init__(self, create_db_func, open_db_func):
+    def __init__(self, create_db_func, open_db_func, close_db_func):
         self.create_db_func = create_db_func
         self.open_db_func = open_db_func
+        self.close_db_func = close_db_func
         self.menu = QMenu("File")
         self._create_actions()
         self._add_actions()
@@ -54,7 +55,8 @@ class FileMenu:
         """
         Method that encodes the functionality of the Close attribute
         """
-        print("Closed database")
+        self.close_db_func()
+        print("Closed databases")
 
     # ==========================================================================================
     # PRIVATE LIKE METHODS
@@ -139,10 +141,10 @@ class MenuBar(QMenuBar):
     :param controller: A ToDoListController object
     """
 
-    def __init__(self, create_db_func, open_db_func):
+    def __init__(self, create_db_func, open_db_func, close_db_func):
         super().__init__()
 
-        self.file_menu = FileMenu(create_db_func, open_db_func)
+        self.file_menu = FileMenu(create_db_func, open_db_func, close_db_func)
         self.history_menu = HistoryMenu()
 
         self.addMenu(self.file_menu.menu)

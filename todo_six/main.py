@@ -176,7 +176,9 @@ class ToDoListController(ToDoListView):
         self.db_path_length = []
 
         # IMport menu options
-        self.menu_bar = MenuBar(self.create_new_database, self.open_database)
+        self.menu_bar = MenuBar(
+            self.create_new_database, self.open_database, self.close_all_tabs
+        )
         self.setMenuBar(self.menu_bar)
 
         self.tabs.tabCloseRequested.connect(self.close_tab)
@@ -293,6 +295,15 @@ class ToDoListController(ToDoListView):
         self.tabs.removeTab(index)  # this will remove the tab from the QTabWidget
         tab.deleteLater()  # this will delete the tab from memory
 
+    # ------------------------------------------------------------------------------------------
+
+    def close_all_tabs(self) -> None:
+        """
+        Method that closes all open tabs and their corresponding database connections.
+        """
+        while self.tabs.count() > 0:
+            self.close_tab(0)  # Always close the first tab in the list.
+
 
 # ==========================================================================================
 # ==========================================================================================
@@ -316,7 +327,6 @@ def main(day_sheet: str, night_sheet: str) -> None:
 # ==========================================================================================
 # TODO Add connection to Close menu bar option that closes all connections but not app
 # TODO Add connection to close app to close all connections, tabs and apps
-# TODO Test time_frame drop down menu for tasks completed yesterday
 if __name__ == "__main__":
     day = "../data/style_sheets/day.qss"
     night = "../data/style_sheets/night.qss"
