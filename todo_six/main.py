@@ -304,6 +304,16 @@ class ToDoListController(ToDoListView):
         while self.tabs.count() > 0:
             self.close_tab(0)  # Always close the first tab in the list.
 
+    # ------------------------------------------------------------------------------------------
+
+    def closeEvent(self, event):
+        """
+        Method that handles the close event of the application. It closes all open tabs
+        and their corresponding database connections before closing the application.
+        """
+        self.close_all_tabs()
+        super().closeEvent(event)
+
 
 # ==========================================================================================
 # ==========================================================================================
@@ -325,8 +335,9 @@ def main(day_sheet: str, night_sheet: str) -> None:
 
 # ==========================================================================================
 # ==========================================================================================
-# TODO Add connection to Close menu bar option that closes all connections but not app
-# TODO Add connection to close app to close all connections, tabs and apps
+# TODO Add calendar to the application
+# TODO Impliment calendar date into functions
+# TODO if calendar date is not today, show results ti widgets, but shut down buttons
 if __name__ == "__main__":
     day = "../data/style_sheets/day.qss"
     night = "../data/style_sheets/night.qss"
