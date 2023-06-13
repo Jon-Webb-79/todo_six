@@ -590,6 +590,28 @@ class ToDoDatabase(SQLiteManager):
         else:
             return False, pd.DataFrame(), message
 
+    # ------------------------------------------------------------------------------------------
+
+    def get_oldest_date(self) -> tuple[bool, str, str]:
+        """
+        Method to get the oldest start_date from the tasks table.
+
+        :return: A tuple containing a boolean, a string and a string.
+                 A boolean of True indicates the operation was successful,
+                 the first string contains the oldest start_date as a string
+                 in the format "YYYY-MM-DD" or an empty string if there are no tasks,
+                 and the second string contains a description of the result.
+        """
+        query = "SELECT MIN(start_date) FROM tasks;"
+        success, result, message = self.db_query(query, None)
+        if success:
+            oldest_date = ""
+            if result.next():
+                oldest_date = result.value(0)  # get the oldest date
+            return True, oldest_date, "Successfully retrieved the oldest date."
+        else:
+            return False, "", message
+
 
 # ==========================================================================================
 # ==========================================================================================

@@ -1,5 +1,7 @@
 # Import necessary packages here
 import os
+import time
+from datetime import datetime
 
 import pytest
 
@@ -237,6 +239,29 @@ def test_select_closed_tasks(tododb_manager):
     expected = ["Test Task3"]
     assert success
     assert set(tasks["task"]) == set(expected)
+
+
+# ------------------------------------------------------------------------------------------
+
+
+@pytest.mark.tododatabase
+def test_get_oldest_date(tododb_manager):
+    # Insert some tasks with specific dates
+    tododb_manager.insert_task("Task 1")
+    tododb_manager.complete_task(1)  # For simplicity, assume the task_id is 1
+    # Delay to make sure tasks have different dates
+    time.sleep(1)
+    tododb_manager.insert_task("Task 2")
+    tododb_manager.complete_task(2)  # For simplicity, assume the task_id is 2
+    time.sleep(1)
+    tododb_manager.insert_task("Task 3")
+    tododb_manager.complete_task(3)  # For simplicity, assume the task_id is 3
+    # Get the oldest date
+    success, oldest_date, _ = tododb_manager.get_oldest_date()
+    assert success
+    # Compare with expected date
+    expected_oldest_date = datetime.now().strftime("%Y-%m-%d")
+    assert oldest_date == expected_oldest_date
 
 
 # ==========================================================================================
