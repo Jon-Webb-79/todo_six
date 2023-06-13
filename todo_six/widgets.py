@@ -617,7 +617,9 @@ class Tab(QWidget):
         from the drop_down_menu.
         """
         time_frame = self.widgets["drop_down_menu"].currentText().upper()
-        success, df, message = self.db.select_closed_tasks(time_frame)
+        # Get selected date from the QDateEdit widget
+        selected_date = self.widgets["calendar"].date().toString("yyyy-MM-dd")
+        success, df, message = self.db.select_closed_tasks(time_frame, selected_date)
         if success:
             self._populate_tasks(df, self.widgets["completed_list"], self.completed_tasks)
         else:
