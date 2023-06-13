@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import (
     QButtonGroup,
     QCalendarWidget,
     QComboBox,
+    QDateEdit,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -355,6 +356,23 @@ class Tab(QWidget):
         self.tab_layout = QVBoxLayout(self)
         self.db = db
 
+        success, oldest_date, _ = self.db.get_oldest_date()
+        if not success:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setText("Error")
+            msg.setInformativeText("Failed to query the oldest date.")
+            msg.setWindowTitle("Error")
+            msg.exec()
+            return
+
+        # Convert the oldest_date and today's date to QDate objects
+        if oldest_date:
+            start_date = QDate.fromString(oldest_date, "yyyy-MM-dd")
+        else:
+            start_date = QDate.currentDate()
+        end_date = QDate.currentDate()
+
         self.widgets = {
             "entry_field": LineEdit(fnt),
             "todo_list": ListWidget(fnt),
@@ -365,6 +383,7 @@ class Tab(QWidget):
             "retire_task_button": PushButton("Retire Task", fnt),
             "delete_task_button": PushButton("Delete Task", fnt),
             "drop_down_menu": DropDownMenu(["Day", "Week", "Month", "Year", "All"]),
+            "calendar": QDateEdit(),
         }
 
         self.tab_layout.addWidget(self.widgets["entry_field"])
@@ -375,7 +394,6 @@ class Tab(QWidget):
         self.tab_layout.addWidget(self.widgets["add_task_button"])
         self.tab_layout.addWidget(self.widgets["retire_task_button"])
         self.tab_layout.addWidget(self.widgets["delete_task_button"])
-        self.tab_layout.addWidget(self.widgets["drop_down_menu"])
 
         self.widgets["add_task_button"].clicked.connect(self._add_task)
         self.shortcut = QShortcut(QKeySequence(Qt.Key.Key_Return), self)
@@ -405,6 +423,21 @@ class Tab(QWidget):
         self.completed_tasks = {}
 
         self._load_tasks_from_database()
+
+        self.widgets["calendar"].setCalendarPopup(True)
+        # Set minimum and maximum dates
+        self.widgets["calendar"].setMinimumDate(start_date)
+        self.widgets["calendar"].setMaximumDate(end_date)
+
+        # Create a QHBoxLayout
+        final_row_layout = QHBoxLayout()
+
+        # Add drop_down_menu and calendar to the QHBoxLayout
+        final_row_layout.addWidget(self.widgets["drop_down_menu"])
+        final_row_layout.addWidget(self.widgets["calendar"])
+
+        # Add the QHBoxLayout to the main layout
+        self.tab_layout.addLayout(final_row_layout)
 
     # ------------------------------------------------------------------------------------------
 
