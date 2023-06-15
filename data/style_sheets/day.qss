@@ -344,7 +344,7 @@ QTabWidget::pane {
 }
 
 QTabWidget::tab-bar {
-    alignment: center;
+    alignment: left;
 }
 
 QTabBar::tab {
