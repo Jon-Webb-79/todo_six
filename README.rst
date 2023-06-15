@@ -38,8 +38,6 @@ Installation
 ############
 In order to download this repository from github, follow these instructions
 
-.. rst-class:: numbered-list
-
 #. Install poetry globally on your computer. Follow the instructions from `Poetry <https://python-poetry.org/docs/>`_
 #. Set the poetry virtual environment with the following command ``poetry config virtualenvs.in-project true``
 #. Ensure you have .git installed on your computer.
@@ -63,7 +61,7 @@ this application stores all data locally in SQLite databases, which protects the
 Login Screen
 ************
 When a user opens the todo_six application, it loads a landing page that has basic functionality.
-As you can see from Figure XX, the login screen contains a radio button that allows the user
+As you can see from the Figure below, the login screen contains a radio button that allows the use
 to choose a day theme or a night theme.  In addition, the user can control the opacity of
 the application with a slider.
 
