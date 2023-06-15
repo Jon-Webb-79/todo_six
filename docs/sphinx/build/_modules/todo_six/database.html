@@ -37,7 +37,6 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Protocol</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">PyQt6.QtSql</span> <span class="kn">import</span> <span class="n">QSqlDatabase</span><span class="p">,</span> <span class="n">QSqlQuery</span>
@@ -53,103 +52,6 @@
 <span class="c1"># ==========================================================================================</span>
 <span class="c1"># ==========================================================================================</span>
 <span class="c1"># Insert Code here</span>
-
-
-<span class="k">class</span> <span class="nc">RelationalDBManager</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">open_db</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Template method for opening an existing database</span>
-
-<span class="sd">        :return result: A tuple containing a boolean and a string.  A boolean of</span>
-<span class="sd">                        True indicates the operation was successful, and the string</span>
-<span class="sd">                        contains a description of the result</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span>
-
-    <span class="c1"># ------------------------------------------------------------------------------------------</span>
-
-    <span class="k">def</span> <span class="nf">close_db</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Template method for closing an existing database</span>
-
-<span class="sd">        :return result: A tuple containing a boolean and a string.  A boolean of</span>
-<span class="sd">                        True indicates the operation was successful, and the string</span>
-<span class="sd">                        contains a description of the result</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span>
-
-    <span class="c1"># ------------------------------------------------------------------------------------------</span>
-
-    <span class="k">def</span> <span class="nf">db_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">QSqlQuery</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Template method for quering a database</span>
-
-<span class="sd">        :param query: A string query of a database</span>
-<span class="sd">        :return result: A tuple containing a boolean and a string.  A boolean of</span>
-<span class="sd">                        True indicates the operation was successful, and the string</span>
-<span class="sd">                        contains a description of the result</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span>
-
-    <span class="c1"># ------------------------------------------------------------------------------------------</span>
-
-    <span class="k">def</span> <span class="nf">table_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Method to return the column names and datatypes for a table</span>
-
-<span class="sd">        :param table_name: The name of the table</span>
-<span class="sd">        :return result: A tuple containing a boolean and a dictionary. A boolean of</span>
-<span class="sd">                        True indicates the operation was successful, and the dictionary</span>
-<span class="sd">                        contains the names of each column and the type associated with</span>
-<span class="sd">                        each column</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span>
-
-    <span class="c1"># ------------------------------------------------------------------------------------------</span>
-
-    <span class="k">def</span> <span class="nf">table_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Method to check if a table exists in the database</span>
-
-<span class="sd">        :param table_name: The name of the table</span>
-<span class="sd">        :return: True if the table exists, False otherwise</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span>
-
-    <span class="c1"># ------------------------------------------------------------------------------------------</span>
-
-    <span class="k">def</span> <span class="nf">db_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Method to return the column names and datatypes for all tables in the database.</span>
-
-<span class="sd">        :return result: A tuple containing a boolean and a nested dictionary. A boolean</span>
-<span class="sd">                        of True indicates the operation was successful, and the nested</span>
-<span class="sd">                        dictionary contains the names of each table as keys, each</span>
-<span class="sd">                        containing a dictionary of column names and the type associated</span>
-<span class="sd">                        with each column. The string is a description of the result.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span>
-
-    <span class="c1"># ------------------------------------------------------------------------------------------</span>
-
-    <span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">column_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">data_types</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Method to create a table in the database.</span>
-
-<span class="sd">        :param table_name: The name of the table</span>
-<span class="sd">        :param column_names: A list of the names of columns</span>
-<span class="sd">        :param data_types: A list of data types for each column</span>
-<span class="sd">        :return: A tuple containing a boolean and a string. A boolean of</span>
-<span class="sd">                 True indicates the operation was successful, and the string</span>
-<span class="sd">                 contains a description of the result</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span>
-
-
-<span class="c1"># ==========================================================================================</span>
-<span class="c1"># ==========================================================================================</span>
 
 
 <div class="viewcode-block" id="SQLiteManager"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.SQLiteManager">[docs]</a><span class="k">class</span> <span class="nc">SQLiteManager</span><span class="p">(</span><span class="n">QSqlDatabase</span><span class="p">):</span>
@@ -583,7 +485,7 @@
 
     <span class="c1"># ------------------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="ToDoDatabase.insert_task"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.ToDoDatabase.insert_task">[docs]</a>    <span class="k">def</span> <span class="nf">insert_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="ToDoDatabase.insert_task"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.ToDoDatabase.insert_task">[docs]</a>    <span class="k">def</span> <span class="nf">insert_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method to insert a task to the tasks table of a database</span>
 
@@ -593,13 +495,16 @@
 <span class="sd">                  contains a description of the result</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">start_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;INSERT INTO tasks (task, start_date) VALUES (?, ?);&quot;</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">start_date</span><span class="p">)</span>
-        <span class="n">success</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">QSqlQuery</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">con</span><span class="p">)</span>
+        <span class="n">query</span><span class="o">.</span><span class="n">prepare</span><span class="p">(</span><span class="s2">&quot;INSERT INTO tasks (task, start_date) VALUES (?, ?);&quot;</span><span class="p">)</span>
+        <span class="n">query</span><span class="o">.</span><span class="n">addBindValue</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+        <span class="n">query</span><span class="o">.</span><span class="n">addBindValue</span><span class="p">(</span><span class="n">start_date</span><span class="p">)</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Task &#39;</span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">&#39; successfully added to tasks.&quot;</span>
+            <span class="n">task_id</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">lastInsertId</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Task &#39;</span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">&#39; successfully added to tasks.&quot;</span><span class="p">,</span> <span class="n">task_id</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">message</span></div>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">query</span><span class="o">.</span><span class="n">lastError</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span> <span class="mi">0</span></div>
 
     <span class="c1"># ------------------------------------------------------------------------------------------</span>
 
@@ -717,6 +622,52 @@
                 <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">result</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">result</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mi">1</span><span class="p">)])</span>  <span class="c1"># get the task text</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;task_id&quot;</span><span class="p">,</span> <span class="s2">&quot;task&quot;</span><span class="p">])</span>
             <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">msg</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span> <span class="n">message</span></div>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ToDoDatabase.get_oldest_date"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.ToDoDatabase.get_oldest_date">[docs]</a>    <span class="k">def</span> <span class="nf">get_oldest_date</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to get the oldest start_date from the tasks table.</span>
+
+<span class="sd">        :return: A tuple containing a boolean, a string and a string.</span>
+<span class="sd">                 A boolean of True indicates the operation was successful,</span>
+<span class="sd">                 the first string contains the oldest start_date as a string</span>
+<span class="sd">                 in the format &quot;YYYY-MM-DD&quot; or an empty string if there are no tasks,</span>
+<span class="sd">                 and the second string contains a description of the result.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT MIN(start_date) FROM tasks;&quot;</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="n">oldest_date</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">next</span><span class="p">():</span>
+                <span class="n">oldest_date</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># get the oldest date</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">oldest_date</span><span class="p">,</span> <span class="s2">&quot;Successfully retrieved the oldest date.&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">message</span></div>
+<span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ToDoDatabase.get_former_open_tasks"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.ToDoDatabase.get_former_open_tasks">[docs]</a>    <span class="k">def</span> <span class="nf">get_former_open_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to select all tasks that were open on a certain date</span>
+
+<span class="sd">        :param date: A datetime string in the format &quot;%Y-%m-%d&quot;</span>
+<span class="sd">        :return: A tuple containing a boolean, a pandas dataframe and a string.</span>
+<span class="sd">                 A boolean of True indicates the operation was successful, the pandas</span>
+<span class="sd">                 dataframe contains the results of the query, and the string</span>
+<span class="sd">                contains a description of the result</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;SELECT task_id, task FROM tasks &quot;</span>
+                 <span class="s2">&quot;WHERE start_date &lt;= ? AND (end_date &gt; ? OR end_date IS NULL);&quot;</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">result</span><span class="o">.</span><span class="n">next</span><span class="p">():</span>
+                <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">result</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">result</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="mi">1</span><span class="p">)])</span>  <span class="c1"># get the task text</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;task_id&quot;</span><span class="p">,</span> <span class="s2">&quot;task&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;Successfully retrieved tasks open on the provided date.&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span> <span class="n">message</span></div></div>
 

@@ -428,6 +428,7 @@ class Tab(QWidget):
         # Set minimum and maximum dates
         self.widgets["calendar"].setMinimumDate(start_date)
         self.widgets["calendar"].setMaximumDate(end_date)
+        self.widgets["calendar"].setDate(QDate.currentDate())
 
         # Create a QHBoxLayout
         final_row_layout = QHBoxLayout()
@@ -438,6 +439,9 @@ class Tab(QWidget):
 
         # Add the QHBoxLayout to the main layout
         self.tab_layout.addLayout(final_row_layout)
+
+        # Create connections for calendar
+        self.widgets["calendar"].dateChanged.connect(self._date_changed)
 
     # ------------------------------------------------------------------------------------------
 
@@ -663,6 +667,55 @@ class Tab(QWidget):
             task = row[1]["task"]
             list_widget.addItem(f"{idx}. {task}")
             task_dict[idx] = task_id
+
+    # ------------------------------------------------------------------------------------------
+
+    def _date_changed(self, qdate):
+        """
+        Method to update the task lists based on the selected date from the calendar
+        widget.
+        """
+        # Convert the QDate object to a string
+        selected_date = qdate.toString("yyyy-MM-dd")
+        current_date = QDate.currentDate().toString("yyyy-MM-dd")
+
+        if selected_date == current_date:
+            # Re-enable buttons and entry field if it's current date
+            self.widgets["entry_field"].setEnabled(True)
+            self.widgets["add_task_button"].setEnabled(True)
+            self.widgets["retire_task_button"].setEnabled(True)
+            self.widgets["delete_task_button"].setEnabled(True)
+            # Refresh tasks
+            self._refresh_tasks()
+        else:
+            # Disable buttons and entry field if it's not current date
+            self.widgets["entry_field"].setEnabled(False)
+            self.widgets["add_task_button"].setEnabled(False)
+            self.widgets["retire_task_button"].setEnabled(False)
+            self.widgets["delete_task_button"].setEnabled(False)
+            # Get tasks from selected date
+            success, open_tasks, message = self.db.get_former_open_tasks(selected_date)
+            if success:
+                self._populate_tasks(
+                    open_tasks, self.widgets["todo_list"], self.todo_tasks
+                )
+            else:
+                QMessageBox.warning(
+                    self, "Error", f"Failed to query open tasks: {message}"
+                )
+
+            time_frame = self.widgets["drop_down_menu"].currentText().upper()
+            success, closed_tasks, _ = self.db.select_closed_tasks(
+                time_frame, selected_date
+            )
+            if success:
+                self._populate_tasks(
+                    closed_tasks, self.widgets["completed_list"], self.completed_tasks
+                )
+            else:
+                QMessageBox.warning(
+                    self, "Error", f"Failed to query completed tasks: {message}"
+                )
 
 
 # ==========================================================================================

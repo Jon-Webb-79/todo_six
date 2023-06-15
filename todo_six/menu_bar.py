@@ -145,10 +145,8 @@ class MenuBar(QMenuBar):
         super().__init__()
 
         self.file_menu = FileMenu(create_db_func, open_db_func, close_db_func)
-        self.history_menu = HistoryMenu()
 
         self.addMenu(self.file_menu.menu)
-        self.addMenu(self.history_menu.menu)
 
 
 # ==========================================================================================

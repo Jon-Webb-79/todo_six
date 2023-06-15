@@ -612,6 +612,33 @@ class ToDoDatabase(SQLiteManager):
         else:
             return False, "", message
 
+    # ------------------------------------------------------------------------------------------
+
+    def get_former_open_tasks(self, date) -> tuple[bool, pd.DataFrame, str]:
+        """
+        Method to select all tasks that were open on a certain date
+
+        :param date: A datetime string in the format "%Y-%m-%d"
+        :return: A tuple containing a boolean, a pandas dataframe and a string.
+                 A boolean of True indicates the operation was successful, the pandas
+                 dataframe contains the results of the query, and the string
+                contains a description of the result
+        """
+        query = (
+            "SELECT task_id, task FROM tasks "
+            "WHERE start_date <= ? AND (end_date > ? OR end_date IS NULL);"
+        )
+        params = (date, date)
+        success, result, message = self.db_query(query, params)
+        tasks = []
+        if success:
+            while result.next():
+                tasks.append([result.value(0), result.value(1)])  # get the task text
+            df = pd.DataFrame(tasks, columns=["task_id", "task"])
+            return True, df, "Successfully retrieved tasks open on the provided date."
+        else:
+            return False, pd.DataFrame(), message
+
 
 # ==========================================================================================
 # ==========================================================================================

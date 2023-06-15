@@ -35,23 +35,26 @@
   <h1>Source code for todo_six.widgets</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Import necessary packages here</span>
 <span class="kn">from</span> <span class="nn">PyQt6.QtCore</span> <span class="kn">import</span> <span class="n">QDate</span><span class="p">,</span> <span class="n">Qt</span>
-<span class="kn">from</span> <span class="nn">PyQt6.QtGui</span> <span class="kn">import</span> <span class="n">QFont</span>
+<span class="kn">from</span> <span class="nn">PyQt6.QtGui</span> <span class="kn">import</span> <span class="n">QFont</span><span class="p">,</span> <span class="n">QKeySequence</span><span class="p">,</span> <span class="n">QShortcut</span>
 <span class="kn">from</span> <span class="nn">PyQt6.QtWidgets</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">QButtonGroup</span><span class="p">,</span>
     <span class="n">QCalendarWidget</span><span class="p">,</span>
     <span class="n">QComboBox</span><span class="p">,</span>
+    <span class="n">QDateEdit</span><span class="p">,</span>
     <span class="n">QHBoxLayout</span><span class="p">,</span>
     <span class="n">QLabel</span><span class="p">,</span>
     <span class="n">QLineEdit</span><span class="p">,</span>
     <span class="n">QListWidget</span><span class="p">,</span>
+    <span class="n">QMessageBox</span><span class="p">,</span>
     <span class="n">QPushButton</span><span class="p">,</span>
     <span class="n">QRadioButton</span><span class="p">,</span>
     <span class="n">QSlider</span><span class="p">,</span>
+    <span class="n">QVBoxLayout</span><span class="p">,</span>
     <span class="n">QWidget</span><span class="p">,</span>
-    <span class="n">QVBoxLayout</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">todo_six.database</span> <span class="kn">import</span> <span class="n">ToDoDatabase</span>
+
 <span class="c1"># ==========================================================================================</span>
 <span class="c1"># ==========================================================================================</span>
 
@@ -373,7 +376,7 @@
 <span class="c1"># ==========================================================================================</span>
 
 
-<div class="viewcode-block" id="Tab"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.widgets.Tab">[docs]</a><span class="k">class</span> <span class="nc">Tab</span><span class="p">:</span>
+<div class="viewcode-block" id="Tab"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.widgets.Tab">[docs]</a><span class="k">class</span> <span class="nc">Tab</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to set a tab instantiation for the todo_six application.</span>
 
@@ -381,11 +384,29 @@
 <span class="sd">    :param tab_name: A string character name for the object</span>
 <span class="sd">    :param db: A ToDoDatabase object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fnt</span><span class="p">:</span> <span class="n">QFont</span><span class="p">,</span> <span class="n">tab_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">ToDoDatabase</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fnt</span><span class="p">:</span> <span class="n">QFont</span><span class="p">,</span> <span class="n">tab_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">ToDoDatabase</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tab_name</span> <span class="o">=</span> <span class="n">tab_name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tab_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tab_widget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">db</span>
+
+        <span class="n">success</span><span class="p">,</span> <span class="n">oldest_date</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_oldest_date</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">()</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Icon</span><span class="o">.</span><span class="n">Critical</span><span class="p">)</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">)</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setInformativeText</span><span class="p">(</span><span class="s2">&quot;Failed to query the oldest date.&quot;</span><span class="p">)</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">)</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Convert the oldest_date and today&#39;s date to QDate objects</span>
+        <span class="k">if</span> <span class="n">oldest_date</span><span class="p">:</span>
+            <span class="n">start_date</span> <span class="o">=</span> <span class="n">QDate</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">oldest_date</span><span class="p">,</span> <span class="s2">&quot;yyyy-MM-dd&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start_date</span> <span class="o">=</span> <span class="n">QDate</span><span class="o">.</span><span class="n">currentDate</span><span class="p">()</span>
+        <span class="n">end_date</span> <span class="o">=</span> <span class="n">QDate</span><span class="o">.</span><span class="n">currentDate</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;entry_field&quot;</span><span class="p">:</span> <span class="n">LineEdit</span><span class="p">(</span><span class="n">fnt</span><span class="p">),</span>
@@ -396,7 +417,8 @@
             <span class="s2">&quot;add_task_button&quot;</span><span class="p">:</span> <span class="n">PushButton</span><span class="p">(</span><span class="s2">&quot;Add Task&quot;</span><span class="p">,</span> <span class="n">fnt</span><span class="p">),</span>
             <span class="s2">&quot;retire_task_button&quot;</span><span class="p">:</span> <span class="n">PushButton</span><span class="p">(</span><span class="s2">&quot;Retire Task&quot;</span><span class="p">,</span> <span class="n">fnt</span><span class="p">),</span>
             <span class="s2">&quot;delete_task_button&quot;</span><span class="p">:</span> <span class="n">PushButton</span><span class="p">(</span><span class="s2">&quot;Delete Task&quot;</span><span class="p">,</span> <span class="n">fnt</span><span class="p">),</span>
-            <span class="s2">&quot;drop_down_menu&quot;</span><span class="p">:</span> <span class="n">DropDownMenu</span><span class="p">([</span><span class="s2">&quot;Day&quot;</span><span class="p">,</span> <span class="s2">&quot;Week&quot;</span><span class="p">,</span> <span class="s2">&quot;Month&quot;</span><span class="p">,</span> <span class="s2">&quot;Year&quot;</span><span class="p">,</span> <span class="s2">&quot;All&quot;</span><span class="p">])</span>
+            <span class="s2">&quot;drop_down_menu&quot;</span><span class="p">:</span> <span class="n">DropDownMenu</span><span class="p">([</span><span class="s2">&quot;Day&quot;</span><span class="p">,</span> <span class="s2">&quot;Week&quot;</span><span class="p">,</span> <span class="s2">&quot;Month&quot;</span><span class="p">,</span> <span class="s2">&quot;Year&quot;</span><span class="p">,</span> <span class="s2">&quot;All&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;calendar&quot;</span><span class="p">:</span> <span class="n">QDateEdit</span><span class="p">(),</span>
         <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tab_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;entry_field&quot;</span><span class="p">])</span>
@@ -407,7 +429,317 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tab_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;add_task_button&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tab_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;retire_task_button&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tab_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;delete_task_button&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tab_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;drop_down_menu&quot;</span><span class="p">])</span></div>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;add_task_button&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_add_task</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortcut</span> <span class="o">=</span> <span class="n">QShortcut</span><span class="p">(</span><span class="n">QKeySequence</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key</span><span class="o">.</span><span class="n">Key_Return</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortcut</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_add_task</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;retire_task_button&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_retire_task</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortcut</span> <span class="o">=</span> <span class="n">QShortcut</span><span class="p">(</span><span class="n">QKeySequence</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key</span><span class="o">.</span><span class="n">Key_Delete</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shortcut</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_retire_task</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;delete_task_button&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_delete_task</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_all_shortcut</span> <span class="o">=</span> <span class="n">QShortcut</span><span class="p">(</span><span class="n">QKeySequence</span><span class="p">(</span><span class="s2">&quot;Shift+Delete&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_all_shortcut</span><span class="o">.</span><span class="n">activated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_delete_task</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;drop_down_menu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_completed_tasks</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">itemSelectionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_clear_other_selections</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;completed_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">itemSelectionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_clear_other_selections</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_mode</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">todo_tasks</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">completed_tasks</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_tasks_from_database</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setCalendarPopup</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Set minimum and maximum dates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setMinimumDate</span><span class="p">(</span><span class="n">start_date</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setMaximumDate</span><span class="p">(</span><span class="n">end_date</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setDate</span><span class="p">(</span><span class="n">QDate</span><span class="o">.</span><span class="n">currentDate</span><span class="p">())</span>
+
+        <span class="c1"># Create a QHBoxLayout</span>
+        <span class="n">final_row_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+        <span class="c1"># Add drop_down_menu and calendar to the QHBoxLayout</span>
+        <span class="n">final_row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;drop_down_menu&quot;</span><span class="p">])</span>
+        <span class="n">final_row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">])</span>
+
+        <span class="c1"># Add the QHBoxLayout to the main layout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">final_row_layout</span><span class="p">)</span>
+
+        <span class="c1"># Create connections for calendar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_date_changed</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_load_tasks_from_database</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A method to load tasks from the database. The tasks will be added to the</span>
+<span class="sd">        appropriate task list and also to the corresponding task dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Query the database for open tasks</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">open_tasks</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">select_open_tasks</span><span class="p">()</span>
+
+        <span class="c1"># Iterate over the open tasks and add them to the todo list and dictionary</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">open_tasks</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+                <span class="n">task_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;task_id&quot;</span><span class="p">]</span>
+                <span class="n">task_name</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;task&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">task_name</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">todo_tasks</span><span class="p">[</span><span class="n">task_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">task_name</span>
+
+        <span class="n">time_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;drop_down_menu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">closed_tasks</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">select_closed_tasks</span><span class="p">(</span><span class="n">time_frame</span><span class="p">)</span>
+
+        <span class="c1"># Iterate over the closed tasks and add them to the completed list and dictionary</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">closed_tasks</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+                <span class="n">task_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;task_id&quot;</span><span class="p">]</span>
+                <span class="n">task_name</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;task&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;completed_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">task_name</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">completed_tasks</span><span class="p">[</span><span class="n">task_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">task_name</span>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_add_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to add a task to the todo_list window of the appropriate tab</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">task_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;entry_field&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">task_text</span><span class="p">:</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">task_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">insert_task</span><span class="p">(</span><span class="n">task_text</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+                <span class="c1"># Display a message box if there&#39;s an error</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">()</span>
+                <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Icon</span><span class="o">.</span><span class="n">Critical</span><span class="p">)</span>
+                <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">)</span>
+                <span class="n">msg</span><span class="o">.</span><span class="n">setInformativeText</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">)</span>
+                <span class="n">msg</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+                <span class="k">return</span>
+            <span class="c1"># Get the last inserted id from the database</span>
+            <span class="n">last_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_largest_id_in_todo_list</span><span class="p">()</span>
+            <span class="n">new_id</span> <span class="o">=</span> <span class="n">last_id</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_id</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">task_text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">todo_tasks</span><span class="p">[</span><span class="n">new_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">task_id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;entry_field&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># clear the entry field</span>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_get_largest_id_in_todo_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the largest ID currently in the todo_list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">max_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
+            <span class="n">item_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+            <span class="n">item_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                <span class="n">item_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>  <span class="c1"># assuming item_text is in &quot;id: text&quot; format</span>
+            <span class="k">if</span> <span class="n">item_id</span> <span class="o">&gt;</span> <span class="n">max_id</span><span class="p">:</span>
+                <span class="n">max_id</span> <span class="o">=</span> <span class="n">item_id</span>
+        <span class="k">return</span> <span class="n">max_id</span>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_retire_task</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to retire a task from the todo_list window of the appropriate tab</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 1. Retire the selected task</span>
+        <span class="n">current_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">current_task</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="c1"># If no item selected, do nothing</span>
+        <span class="n">task_id</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">current_task</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;. &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">db_task_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">todo_tasks</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">task_id</span><span class="p">)]</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">complete_task</span><span class="p">(</span><span class="n">db_task_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">()</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Icon</span><span class="o">.</span><span class="n">Critical</span><span class="p">)</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">)</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setInformativeText</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">)</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="c1"># 4. Remove the updated task from the todo list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">takeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">current_task</span><span class="p">))</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">todo_tasks</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">task_id</span><span class="p">)]</span>  <span class="c1"># remove from our tracking dictionary</span>
+
+        <span class="c1"># 2. Clear the completed list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;completed_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="c1"># 3. Query the database for completed tasks</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_tasks</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">()</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Icon</span><span class="o">.</span><span class="n">Critical</span><span class="p">)</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">)</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setInformativeText</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">)</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_clear_other_selections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to ensure that only one task can be highlighted at a time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_mode</span><span class="p">:</span>  <span class="c1"># Skip clearing if we&#39;re in delete mode</span>
+            <span class="n">sender</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">sender</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;completed_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clearSelection</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clearSelection</span><span class="p">()</span>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_delete_task</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to delete the selected task from the database and the respective list</span>
+<span class="sd">        window.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 1. Determine which list the user is interacting with</span>
+        <span class="n">selected_list</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">selected_item</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">task_dict</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">():</span>
+            <span class="n">selected_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">]</span>
+            <span class="n">selected_item</span> <span class="o">=</span> <span class="n">selected_list</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
+            <span class="n">task_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">todo_tasks</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;completed_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">():</span>
+            <span class="n">selected_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;completed_list&quot;</span><span class="p">]</span>
+            <span class="n">selected_item</span> <span class="o">=</span> <span class="n">selected_list</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
+            <span class="n">task_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed_tasks</span>
+
+        <span class="k">if</span> <span class="n">selected_item</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;No task selected.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># 2. Determine the task id</span>
+        <span class="n">task_id</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">selected_item</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;. &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">db_task_id</span> <span class="o">=</span> <span class="n">task_dict</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">task_id</span><span class="p">)]</span>
+
+        <span class="c1"># 3. Confirmation window</span>
+        <span class="n">confirm</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">question</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="s2">&quot;Confirm Deletion&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Are you sure you want to delete the selected task?&quot;</span><span class="p">,</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Yes</span> <span class="o">|</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">No</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># 4. Delete the task from the database</span>
+        <span class="k">if</span> <span class="n">confirm</span> <span class="o">==</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Yes</span><span class="p">:</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">delete_task</span><span class="p">(</span><span class="n">db_task_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Failed to delete task: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="c1"># 5. Refresh the tasks</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_tasks</span><span class="p">()</span>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_update_completed_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to refresh the completed tasks list based on the selected time frame</span>
+<span class="sd">        from the drop_down_menu.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">time_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;drop_down_menu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="c1"># Get selected date from the QDateEdit widget</span>
+        <span class="n">selected_date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="s2">&quot;yyyy-MM-dd&quot;</span><span class="p">)</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">select_closed_tasks</span><span class="p">(</span><span class="n">time_frame</span><span class="p">,</span> <span class="n">selected_date</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_populate_tasks</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;completed_list&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed_tasks</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to query completed tasks: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_refresh_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to refresh the tasks from the database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Refresh the todo tasks</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">select_open_tasks</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_populate_tasks</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">todo_tasks</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Failed to query open tasks: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Refresh the completed tasks</span>
+        <span class="n">time_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;drop_down_menu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">select_closed_tasks</span><span class="p">(</span><span class="n">time_frame</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_populate_tasks</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;completed_list&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed_tasks</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Failed to query completed tasks: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_populate_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">list_widget</span><span class="p">,</span> <span class="n">task_dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to populate a list widget with tasks from a DataFrame and update a</span>
+<span class="sd">        corresponding task dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">list_widget</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">task_dict</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">(),</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">task_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;task_id&quot;</span><span class="p">]</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;task&quot;</span><span class="p">]</span>
+            <span class="n">list_widget</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">task_dict</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">task_id</span>
+<span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="nf">_date_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qdate</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to update the task lists based on the selected date from the calendar widget.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Convert the QDate object to a string</span>
+        <span class="n">selected_date</span> <span class="o">=</span> <span class="n">qdate</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="s2">&quot;yyyy-MM-dd&quot;</span><span class="p">)</span>
+        <span class="n">current_date</span> <span class="o">=</span> <span class="n">QDate</span><span class="o">.</span><span class="n">currentDate</span><span class="p">()</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="s2">&quot;yyyy-MM-dd&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">selected_date</span> <span class="o">==</span> <span class="n">current_date</span><span class="p">:</span>
+            <span class="c1"># Re-enable buttons and entry field if it&#39;s current date</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;entry_field&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;add_task_button&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;retire_task_button&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;delete_task_button&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># Refresh tasks</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_tasks</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Disable buttons and entry field if it&#39;s not current date</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;entry_field&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;add_task_button&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;retire_task_button&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;delete_task_button&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># Get tasks from selected date</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">open_tasks</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_former_open_tasks</span><span class="p">(</span><span class="n">selected_date</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_populate_tasks</span><span class="p">(</span><span class="n">open_tasks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;todo_list&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">todo_tasks</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Failed to query open tasks: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">time_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;drop_down_menu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">closed_tasks</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">select_closed_tasks</span><span class="p">(</span><span class="n">time_frame</span><span class="p">,</span> <span class="n">selected_date</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_populate_tasks</span><span class="p">(</span><span class="n">closed_tasks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="s2">&quot;completed_list&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed_tasks</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Failed to query completed tasks: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
 <span class="c1"># ==========================================================================================</span>
 <span class="c1"># ==========================================================================================</span>
 <span class="c1"># eof</span>

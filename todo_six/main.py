@@ -335,9 +335,8 @@ def main(day_sheet: str, night_sheet: str) -> None:
 
 # ==========================================================================================
 # ==========================================================================================
-# TODO Add calendar to the application
-# TODO Impliment calendar date into functions
-# TODO if calendar date is not today, show results ti widgets, but shut down buttons
+# TODO Add method to update todo and completed list based on calendar widget
+#      a. Make buttons and entry_field inactive if date is not current date
 if __name__ == "__main__":
     day = "../data/style_sheets/day.qss"
     night = "../data/style_sheets/night.qss"

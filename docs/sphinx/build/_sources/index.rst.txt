@@ -23,19 +23,25 @@ Indices and tables
 
 Installation
 ============
-To install todo_list, follow these steps ...
+To install todo_six application as a developer, follow these steps.
+
+.. rst-class:: numbered-list
+
+#. Install poetry globally on your computer. Follow the instructions from `Poetry <https://python-poetry.org/docs/>`_
+#. Set the poetry virtual environment with the following command ``poetry config virtualenvs.in-project true``
+#. Ensure you have .git installed on your computer.
+#. At your desired location create a directory titled ``todo_six``
+#. Open a terminal (Bash, zsh or DOS) and cd to the ``todo_six`` directory
+#. Type ``git clone https://github.com/Jon-Webb-79/todo_six.git todo_six``
+#. Install packages with ``poetry install``
+
+To install the package as an executable complete the developer installation process,
+and complete the following steps.
 
 Usage
 =====
-The use todo_list, follow these instructions
+The user instructions for this application is shown in :doc:`UsersManual`.
 
-Tutorials
-=========
-info here
-
-Troubleshooting
-===============
-info here
 
 Developers Documentation
 ========================
@@ -43,8 +49,10 @@ For detailed documentation on developing with Todo List, please refer to the :do
 
 Contributing
 ============
-information here
+Pull requests are welcome.  For major changes, please open an issue first to discuss what
+you would like to change.  Please make sure to include and update tests as well
+as relevant cod-strings and sphinx updates.
 
 License
 =======
-License information here
+This project uses a basic MIT license

@@ -42,7 +42,78 @@
 
   <section id="todo-list-users-manual">
 <h1>Todo List Users Manual<a class="headerlink" href="#todo-list-users-manual" title="Permalink to this heading">¶</a></h1>
-<p>Describe this software here</p>
+<p>todo_six is a Todo list application within in the Python3 language using the PyQt6 library, hence
+the name todo_six.  This application allows a user to manager multiple todo lists ina  single application,
+and also allows the user to view not only view their recently completed tasks, but any tasks completed
+within specific time frames.  Furthremore, the user can also review their todo tasks and completed
+tasks on any date they wish.  Most important, unlike other applications that store data on the cloud,
+this application stores all data locally in SQLite databases, which protects their privacy.</p>
+<section id="login-screen">
+<h2>Login Screen<a class="headerlink" href="#login-screen" title="Permalink to this heading">¶</a></h2>
+<p>When a user opens the todo_six application, it loads a landing page that has basic functionality.
+As you can see from Figure XX, the login screen contains a radio button that allows the user
+to choose a day theme or a night theme.  In addition, the user can control the opacity of
+the application with a slider.</p>
+<img alt="_images/login_screen.png" class="align-center" src="_images/login_screen.png" />
+</section>
+<section id="create-and-open-a-list">
+<h2>Create and Open a List<a class="headerlink" href="#create-and-open-a-list" title="Permalink to this heading">¶</a></h2>
+<p>On Windows and Linux machines, the menu bar will appear attached to the top of
+an application.  However, on Macintosh platforms it will appear at the top
+of the screen, detached from the application.</p>
+<p>A user can create a new list by clicking <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">New</span></code>.  This will open up a
+window that prompts the user to navigate the the directory where they want
+to createa a todo database.  The user can then enter the name of the database,
+click Save, and the empty todo list will be saved to the user defined directory.</p>
+<img alt="_images/create_file.png" class="align-center" src="_images/create_file.png" />
+<p>Once the database has been created, the screen will be populated with a tab containing
+all buttons that allow a user to enter a task into the entry field, and then
+to the todo list and completed list.</p>
+<p>THe user can also open an existing database via <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">Open</span></code>.  The application will
+allow a user to create and open multiple tabs at any one time.  Each tab will be
+associated with a new database.</p>
+<img alt="_images/basic_application.png" class="align-center" src="_images/basic_application.png" />
+</section>
+<section id="close-the-application">
+<h2>Close the Application<a class="headerlink" href="#close-the-application" title="Permalink to this heading">¶</a></h2>
+<p>A user can close the application in one of several ways.  The user can click on the <code class="docutils literal notranslate"><span class="pre">X</span></code> icon on the right side
+of the tab, which will safely close the database associated with that task list and then close the tab.
+The user can also Navigate to <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">Close</span></code> which will safely close all databases, and then close
+each tab.  Finally, the user can click the <code class="docutils literal notranslate"><span class="pre">X</span></code> icon at the top right of the application, which will
+safely close each database, all tabs, and then exit the application.</p>
+</section>
+<section id="push-buttons">
+<h2>Push Buttons<a class="headerlink" href="#push-buttons" title="Permalink to this heading">¶</a></h2>
+<p>The user can create a todo task by typing it into the entry field at the top of the
+application.  To add the task to the todo list, the user can press the <strong>Add Task</strong>
+button, or they can use the <strong>enter</strong> key as a shortcut for the button.</p>
+<p>To move a task from the Todo list to the Completed list, a user must highlight the
+task to be moved and then press the <strong>Retire Task</strong> button.  The user can also
+press the <strong>del</strong> key as a shortcut to the <strong>Retire Task</strong> button.  This does
+not delete a task, but instead marks it as complete.</p>
+<p>Finally a user can delete a task from the database by highlighting it and pressing
+the <strong>Delete Task</strong> button, or <strong>Shit del</strong> as a shortcut key.  THe application
+will ask the user if they are sure they want to delete the task before carrying
+out the operation.  In addition, a user can delete a task from the todo and completed
+task lists.</p>
+</section>
+<section id="calendar-options">
+<h2>Calendar Options<a class="headerlink" href="#calendar-options" title="Permalink to this heading">¶</a></h2>
+<p>When a database todo list is launched, the date in the bottom right hand corner
+of the application should be the current date, and teh bottom left hand option should
+be <strong>Day</strong>.  If the user toggles the lower left hand time frame option to another value,
+which could be <strong>Week</strong>, <strong>Month</strong>, ‘<strong>Year</strong>, or <strong>All</strong>, the application will show
+all tasks that were completed within the previous work week of the listed date, the
+previous month, going back to the first of the month, the previous year, going back to
+the first of the year, or all tasks that have been completed.</p>
+<p>The user can also select the date on the bottom right hand of the screen.  This
+will produce a calendar widget that will allow a user to select any date ranging
+from the earliest date a task was entered to the current date.  If the user selects
+a date that is different than the current date, all buttons and entry fields will
+be de-activated, as the user can only view past tasks, but can not change them.
+The use of this feature will show a user all tasks that were in work and completed
+within the drop down menu time frame of the selected date.</p>
+</section>
 </section>
 
 
@@ -52,6 +123,20 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Todo List Users Manual</a><ul>
+<li><a class="reference internal" href="#login-screen">Login Screen</a></li>
+<li><a class="reference internal" href="#create-and-open-a-list">Create and Open a List</a></li>
+<li><a class="reference internal" href="#close-the-application">Close the Application</a></li>
+<li><a class="reference internal" href="#push-buttons">Push Buttons</a></li>
+<li><a class="reference internal" href="#calendar-options">Calendar Options</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
   <div>
     <h4>Previous topic</h4>
     <p class="topless"><a href="index.html"
