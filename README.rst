@@ -40,13 +40,13 @@ In order to download this repository from github, follow these instructions
 
 .. rst-class:: numbered-list
 
-    #. Install poetry globally on your computer. Follow the instructions from `Poetry <https://python-poetry.org/docs/>`_
-    #. Set the poetry virtual environment with the following command ``poetry config virtualenvs.in-project true``
-    #. Ensure you have .git installed on your computer.
-    #. At your desired location create a directory titled ``todo_six``
-    #. Open a terminal (Bash, zsh or DOS) and cd to the ``todo_six`` directory
-    #. Type ``git clone https://github.com/Jon-Webb-79/todo_six.git todo_six``
-    #. Install packages with ``poetry install``
+#. Install poetry globally on your computer. Follow the instructions from `Poetry <https://python-poetry.org/docs/>`_
+#. Set the poetry virtual environment with the following command ``poetry config virtualenvs.in-project true``
+#. Ensure you have .git installed on your computer.
+#. At your desired location create a directory titled ``todo_six``
+#. Open a terminal (Bash, zsh or DOS) and cd to the ``todo_six`` directory
+#. Type ``git clone https://github.com/Jon-Webb-79/todo_six.git todo_six``
+#. Install packages with ``poetry install``
 
 To install the package as an executable complete the developer installation process,
 and complete the following steps.
