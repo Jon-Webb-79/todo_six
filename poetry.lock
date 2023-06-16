@@ -797,6 +797,17 @@ files = [
 plugins = ["importlib-metadata"]
 
 [[package]]
+name = "pyinstall"
+version = "0.1.4"
+description = "Installer for Python packages"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pyinstall-0.1.4.tar.gz", hash = "sha256:bb2407a3664ce25454f7e4a93763198f3a6a43c0cc727e33a06c0ce18324cd15"},
+]
+
+[[package]]
 name = "pyproject-api"
 version = "1.5.1"
 description = "API to interact with the python pyproject.toml based projects"
@@ -1170,4 +1181,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.3)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1cb387c6c4730609027cadf6272ea1ae3cf7c22d5c7afc4d698acdbecf7e0086"
+content-hash = "28a3d0bd5ceb733d80c848ed847266f42975bd3e76e2116d6ce9039de8c868f9"
