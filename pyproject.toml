@@ -11,6 +11,7 @@ python = "^3.11"
 pyqt6 = "^6.5.0"
 pandas = "^2.0.2"
 pyinstall = "^0.1.4"
+pyinstaller = "4.5.1"
 
 
 [tool.poetry.group.dev.dependencies]
