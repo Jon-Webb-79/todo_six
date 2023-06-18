@@ -452,26 +452,7 @@ class Tab(QWidget):
         """
 
         # Query the database for open tasks
-        success, open_tasks, _ = self.db.select_open_tasks()
-
-        # Iterate over the open tasks and add them to the todo list and dictionary
-        if success:
-            for _, row in open_tasks.iterrows():
-                task_id = row["task_id"]
-                task_name = row["task"]
-                self.widgets["todo_list"].addItem(task_name)
-                self.todo_tasks[task_id] = task_name
-
-        time_frame = self.widgets["drop_down_menu"].currentText().upper()
-        success, closed_tasks, _ = self.db.select_closed_tasks(time_frame)
-
-        # Iterate over the closed tasks and add them to the completed list and dictionary
-        if success:
-            for _, row in closed_tasks.iterrows():
-                task_id = row["task_id"]
-                task_name = row["task"]
-                self.widgets["completed_list"].addItem(task_name)
-                self.completed_tasks[task_id] = task_name
+        self._refresh_tasks()
 
     # ------------------------------------------------------------------------------------------
 
