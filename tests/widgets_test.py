@@ -1,11 +1,9 @@
 # Import necessary packages here
 import pytest
-from PyQt6.QtCore import QDate
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QApplication, QLineEdit, QListWidgetItem
 
 from todo_six.widgets import (
-    Calendar,
     DayNightRadioButton,
     DropDownMenu,
     LineEdit,
@@ -408,38 +406,6 @@ def test_button_enabled(push_button):
     Test if button enabled status is correctly set
     """
     assert push_button.isEnabled()
-
-
-# ==========================================================================================
-# ==========================================================================================
-# Test Calendar class
-
-
-@pytest.fixture
-def calendar(app):
-    start_date = QDate(2023, 1, 1)
-    end_date = QDate(2024, 12, 31)
-    return Calendar(start_date, end_date, True, True)
-
-
-# ------------------------------------------------------------------------------------------
-
-
-@pytest.mark.calendar
-def test_selected_date(calendar):
-    """
-    Test the get_selected_date and set_selected_date methods of the Calendar widget
-    """
-    new_date = QDate(2023, 6, 4)
-
-    # Verify the initial selected date
-    assert calendar.get_selected_date() == QDate.currentDate()
-
-    # Set the selected date to a new value
-    calendar.set_selected_date(new_date)
-
-    # Verify the new selected date
-    assert calendar.get_selected_date() == new_date
 
 
 # ==========================================================================================

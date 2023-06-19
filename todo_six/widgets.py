@@ -3,7 +3,6 @@ from PyQt6.QtCore import QDate, Qt
 from PyQt6.QtGui import QFont, QKeySequence, QShortcut
 from PyQt6.QtWidgets import (
     QButtonGroup,
-    QCalendarWidget,
     QComboBox,
     QDateEdit,
     QHBoxLayout,
@@ -284,57 +283,6 @@ class PushButton(QPushButton):
         super().__init__(text)
         self.setFont(font)
         self.setEnabled(active_widget)
-
-
-# ==========================================================================================
-# ==========================================================================================
-
-
-class Calendar(QCalendarWidget):
-    """
-    Custom calendar widget with specified start and end dats as well as gird pattern
-
-    :param start_date: A QDate object representing the first acceptable date in
-                       the calendar
-    :param end_date: A QDate object representing the last acceptable date in the
-                     calendar
-    :param grid: True if a grid around the dates is to be displayed, False otherwise.
-    :param active_widget: Widget is active when created if set to True, inactive
-                          if set to false
-    """
-
-    def __init__(
-        self,
-        start_date: QDate,
-        end_date: QDate,
-        grid: bool = True,
-        active_widget: bool = True,
-    ):
-        super().__init__()
-        self.setMinimumDate(start_date)
-        self.setMaximumDate(end_date)
-        self.setEnabled(active_widget)
-        self.setGridVisible(grid)
-
-    # ------------------------------------------------------------------------------------------
-
-    def get_selected_date(self) -> QDate:
-        """
-        Method to get the currently selected date.
-
-        :return: The currently selected date.
-        """
-        return self.selectedDate()
-
-    # ------------------------------------------------------------------------------------------
-
-    def set_selected_date(self, date: QDate) -> None:
-        """
-        Method to set the selected date.
-
-        :param date: The date to select.
-        """
-        self.setSelectedDate(date)
 
 
 # ==========================================================================================
