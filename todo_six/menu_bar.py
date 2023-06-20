@@ -89,50 +89,6 @@ class FileMenu:
 # ==========================================================================================
 
 
-class HistoryMenu:
-    """
-    Class that builds functionality for all attributes of the History menu bar item
-    """
-
-    def __init__(self):
-        self.menu = QMenu("History")
-        self.menu.setEnabled(False)
-        self._create_actions()
-        self._add_actions()
-
-    # ------------------------------------------------------------------------------------------
-
-    def show_calendar(self):
-        """
-        Method that encodes the functionality of the calendar widget
-        """
-        print("Calendar displayed")
-
-    # ==========================================================================================
-    # PRIVATE-LIKE METHODS
-
-    def _create_actions(self):
-        """
-        Creates and connects slots for attrobutes of the History menu bar item
-        """
-        self.calendar_action = QAction("Calendar")
-
-        # Connect actions to slots
-        self.calendar_action.triggered.connect(self.show_calendar)
-
-    # ------------------------------------------------------------------------------------------
-
-    def _add_actions(self):
-        """
-        Adds slots for the History menu bar item
-        """
-        self.menu.addAction(self.calendar_action)
-
-
-# ==========================================================================================
-# ==========================================================================================
-
-
 class MenuBar(QMenuBar):
     """
     Custom implementation of the QMenuBar item.  This class integrates all menu
