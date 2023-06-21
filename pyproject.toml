@@ -13,6 +13,7 @@ pandas = "^2.0.2"
 pyinstall = "^0.1.4"
 pyinstaller = "^5.12.0"
 jinja2 = "^3.1.2"
+numpy = "^1.25.0"
 
 
 [tool.poetry.group.dev.dependencies]
