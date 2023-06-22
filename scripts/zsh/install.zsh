@@ -31,12 +31,12 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     echo "Detected OS: macOS"
-    cp data/icon.icns icon.icns
-    ICONFILE=icon.icns
+    cp data/icon.icns todo.icns
+    ICONFILE=todo.icns
 elif [[ "$OSTYPE" == "cygwin" || "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
     echo "Detected OS: Windows"
-    cp data/icon.ico icon.ico
-    ICONFILE=icon.ico
+    cp data/icon.ico todo.ico
+    ICONFILE=todo.ico
 else
     echo "Unsupported OS detected, cannot copy the icon file"
 fi
@@ -69,8 +69,6 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     --hidden-import "jinja2" \
     --add-data "data/style_sheets/day.qss:data/style_sheets" \
     --add-data "data/style_sheets/night.qss:data/style_sheets" \
-    --add-binary=".venv/lib/python3.11/site-packages/numpy.libs/libquadmath-96973f99.so.0.0.0:." \
-    --add-binary=".venv/lib/python3.11/site-packages/numpy.libs/libgfortran-040039e1.so.5.0.0:." \
     todo.py
 	if [ ! -d ~/bin ]; then
 		mkdir -p ~/bin
@@ -83,8 +81,6 @@ else
     --hidden-import "jinja2" \
     --add-data "data/style_sheets/day.qss:data/style_sheets" \
     --add-data "data/style_sheets/night.qss:data/style_sheets" \
-    --add-binary=".venv/lib/python3.11/site-packages/numpy.libs/libquadmath-96973f99.so.0.0.0:." \
-	--add-binary=".venv/lib/python3.11/site-packages/numpy.libs/libgfortran-040039e1.so.5.0.0:." \
     todo.py
 fi
 # Return control
