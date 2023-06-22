@@ -10,6 +10,9 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 	if [ ! -d ~/.icons ]; then
 		mkdir -p ~/.icons
 	fi
+	if [ ! -f ~/.icons/todo.png ]; then
+		rm ~/.icons/todo.png
+	fi
     cp data/icon.png ~/.icons/todo.png
 
 	# Check to see if todo.desktop already exists
@@ -19,6 +22,12 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
 	# Copy scripts/zsh/todo.desktop to ~/.local/share/applications/todo.desktop
 	cp scripts/zsh/todo.desktop ~/.local/share/applications/todo.desktop
+	exec_path=$(pwd)"/bin/todo"
+	icon_path=$(pwd)"/.icons/todo.png"
+
+	sed -i "s|^Exec=.*|Exec=$exec_path|" ~/.local/share/applications/todo.desktop
+
+	sed -i "s|^Icon=.*|Icon=$icon_path|" ~/.local/share/applications/todo.desktop
 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     echo "Detected OS: macOS"

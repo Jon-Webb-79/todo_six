@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name==Todo List
+Name=Todo List
 Comment=Provides a todo list with data written to a database
-Exec=~/bin/todo
-Icon=~/.icons/todo.png
+Exec=
+Icon=
