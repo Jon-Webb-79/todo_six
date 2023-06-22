@@ -83,6 +83,11 @@ else
     --add-data "data/style_sheets/night.qss:data/style_sheets" \
     todo.py
 fi
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+	cp -R dist/todo.app ~/Applications
+fi
+
 # Return control
 echo "Returning to scripts/zsh directory"
 cd scripts/zsh
