@@ -77,7 +77,7 @@ else
     --add-binary=".venv/lib/python3.11/site-packages/numpy.libs/libquadmath-96973f99.so.0.0.0:." \
 	--add-binary=".venv/lib/python3.11/site-packages/numpy.libs/libgfortran-040039e1.so.5.0.0:." \
     todo.py
-
+fi
 # Return control
 echo "Returning to scripts/zsh directory"
 cd scripts/zsh
