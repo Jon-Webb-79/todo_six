@@ -22,8 +22,8 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
 	# Copy scripts/zsh/todo.desktop to ~/.local/share/applications/todo.desktop
 	cp scripts/zsh/todo.desktop ~/.local/share/applications/todo.desktop
-	exec_path=$($HOME)"/bin/todo"
-	icon_path=$($HOME)"/.icons/todo.png"
+	exec_path=$HOME"/bin/todo"
+	icon_path=$HOME"/.icons/todo.png"
 
 	sed -i "s|^Exec=.*|Exec=$exec_path|" ~/.local/share/applications/todo.desktop
 
