@@ -1,11 +1,11 @@
-#!/usr/bin/zsh
+#!/usr/bin/bash
 # ==========================================================================================
 # ==========================================================================================
 
-# File:    install.zsh
+# File:    install.sh
 # Date:    June 22, 2023
 # Author:  Jonathan A. Webb
-# Purpose: This file contains a zsh script that will install the todo executable on
+# Purpose: This file contains a bash script that will install the todo executable on
 #          Linux, Mac, or a Pc
 # ==========================================================================================
 # ==========================================================================================
