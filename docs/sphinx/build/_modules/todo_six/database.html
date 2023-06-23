@@ -646,7 +646,8 @@
             <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">oldest_date</span><span class="p">,</span> <span class="s2">&quot;Successfully retrieved the oldest date.&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">message</span></div>
-<span class="c1"># ------------------------------------------------------------------------------------------</span>
+
+    <span class="c1"># ------------------------------------------------------------------------------------------</span>
 
 <div class="viewcode-block" id="ToDoDatabase.get_former_open_tasks"><a class="viewcode-back" href="../../DevelopersManual.html#todo_six.database.ToDoDatabase.get_former_open_tasks">[docs]</a>    <span class="k">def</span> <span class="nf">get_former_open_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -658,8 +659,10 @@
 <span class="sd">                 dataframe contains the results of the query, and the string</span>
 <span class="sd">                contains a description of the result</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;SELECT task_id, task FROM tasks &quot;</span>
-                 <span class="s2">&quot;WHERE start_date &lt;= ? AND (end_date &gt; ? OR end_date IS NULL);&quot;</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;SELECT task_id, task FROM tasks &quot;</span>
+            <span class="s2">&quot;WHERE start_date &lt;= ? AND (end_date &gt; ? OR end_date IS NULL);&quot;</span>
+        <span class="p">)</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
         <span class="n">success</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
         <span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>

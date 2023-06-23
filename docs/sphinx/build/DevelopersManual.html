@@ -214,47 +214,6 @@ if set to false</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="todo_six.widgets.Calendar">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">todo_six.widgets.</span></span><span class="sig-name descname"><span class="pre">Calendar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QDate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QDate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/todo_six/widgets.html#Calendar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.Calendar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom calendar widget with specified start and end dats as well as gird pattern</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>start_date</strong> – A QDate object representing the first acceptable date in
-the calendar</p></li>
-<li><p><strong>end_date</strong> – A QDate object representing the last acceptable date in the
-calendar</p></li>
-<li><p><strong>grid</strong> – True if a grid around the dates is to be displayed, False otherwise.</p></li>
-<li><p><strong>active_widget</strong> – Widget is active when created if set to True, inactive
-if set to false</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="todo_six.widgets.Calendar.get_selected_date">
-<span class="sig-name descname"><span class="pre">get_selected_date</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QDate</span></span></span><a class="reference internal" href="_modules/todo_six/widgets.html#Calendar.get_selected_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.Calendar.get_selected_date" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to get the currently selected date.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The currently selected date.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="todo_six.widgets.Calendar.set_selected_date">
-<span class="sig-name descname"><span class="pre">set_selected_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QDate</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/todo_six/widgets.html#Calendar.set_selected_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.Calendar.set_selected_date" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to set the selected date.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>date</strong> – The date to select.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="todo_six.widgets.Tab">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">todo_six.widgets.</span></span><span class="sig-name descname"><span class="pre">Tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fnt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QFont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tab_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#todo_six.database.ToDoDatabase" title="todo_six.database.ToDoDatabase"><span class="pre">ToDoDatabase</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/todo_six/widgets.html#Tab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.widgets.Tab" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to set a tab instantiation for the todo_six application.</p>
@@ -690,7 +649,7 @@ contains a description of the result</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="todo_six.database.ToDoDatabase.select_closed_tasks">
-<span class="sig-name descname"><span class="pre">select_closed_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2023-06-14'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/todo_six/database.html#ToDoDatabase.select_closed_tasks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.ToDoDatabase.select_closed_tasks" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">select_closed_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2023-06-23'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/todo_six/database.html#ToDoDatabase.select_closed_tasks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#todo_six.database.ToDoDatabase.select_closed_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to select all tasks that have been closed within a certain time frame
 of a given date</p>
 <dl class="field-list simple">
@@ -760,11 +719,6 @@ contains a description of the result</p>
 <li><a class="reference internal" href="#todo_six.widgets.OpacitySlider.get_opacity"><code class="docutils literal notranslate"><span class="pre">OpacitySlider.get_opacity()</span></code></a></li>
 <li><a class="reference internal" href="#todo_six.widgets.OpacitySlider.set_opacity"><code class="docutils literal notranslate"><span class="pre">OpacitySlider.set_opacity()</span></code></a></li>
 <li><a class="reference internal" href="#todo_six.widgets.OpacitySlider.update_label"><code class="docutils literal notranslate"><span class="pre">OpacitySlider.update_label()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#todo_six.widgets.Calendar"><code class="docutils literal notranslate"><span class="pre">Calendar</span></code></a><ul>
-<li><a class="reference internal" href="#todo_six.widgets.Calendar.get_selected_date"><code class="docutils literal notranslate"><span class="pre">Calendar.get_selected_date()</span></code></a></li>
-<li><a class="reference internal" href="#todo_six.widgets.Calendar.set_selected_date"><code class="docutils literal notranslate"><span class="pre">Calendar.set_selected_date()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#todo_six.widgets.Tab"><code class="docutils literal notranslate"><span class="pre">Tab</span></code></a></li>
