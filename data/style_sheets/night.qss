@@ -121,7 +121,17 @@ QLineEdit {
 	padding: 0 8px;
 	color: rgb(255, 255, 255);
 	background:rgb(100, 100, 100);
-	selection-background-color: rgb(187, 187, 187);
+	selection-background-color: rgb(120, 120, 120);
+	selection-color: rgb(60, 63, 65);
+}
+QListWidget {
+	border-width: 1px; border-radius: 4px;
+	border-color: rgb(58, 58, 58);
+	border-style: inset;
+	padding: 0 8px;
+	color: rgb(255, 255, 255);
+	background:rgb(100, 100, 100);
+	selection-background-color: rgb(120, 120, 120);
 	selection-color: rgb(60, 63, 65);
 }
 QLabel {
