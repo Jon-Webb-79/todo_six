@@ -108,7 +108,7 @@ fi
 
 if [[ "$OSTYPE" == "cygwin"* ]]; then
 	INSTALL_DIR="/cygdrive/c/Program Files/YourAppName"
-	EXECUTABLE="yourapp.exe"
+	EXECUTABLE="todo.exe"
 
 	# Check if the directory already exists
 	if [ -d "$INSTALL_DIR" ]; then
